@@ -1,9 +1,16 @@
 package com.example.wavify
 
+import android.app.ActivityOptions
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
+import android.transition.Fade
+import android.transition.Slide
+import android.view.Gravity
+import android.view.Window
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.wavify.databinding.ActivityMainBinding
 
@@ -14,6 +21,14 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
+        // Animacja pojawiania się utworów podczas przewijania
+        window.requestFeature(Window.FEATURE_CONTENT_TRANSITIONS)
+        window.enterTransition = Slide(Gravity.END).apply { duration = 300 }
+        window.exitTransition = Fade().apply { duration = 300 }
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -31,7 +46,7 @@ class MainActivity : AppCompatActivity() {
                 putStringArrayListExtra("SONG_TITLES", ArrayList(songs.map { it.title }))
                 putStringArrayListExtra("SONG_ARTISTS", ArrayList(songs.map { it.artist ?: "Nieznany artysta" }))
             }
-            startActivity(intent)
+            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
         }
 
         binding.recyclerView.layoutManager = LinearLayoutManager(this)

@@ -10,7 +10,6 @@ class AudioAdapter(
     private val songs: List<AudioFile>,
     private val onItemClick: (Int) -> Unit
 ) : RecyclerView.Adapter<AudioAdapter.AudioViewHolder>() {
-
     inner class AudioViewHolder(val binding: ItemAudioBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(song: AudioFile, position: Int) {
@@ -25,8 +24,14 @@ class AudioAdapter(
         return AudioViewHolder(binding)
     }
 
+    // Ripple effect podczas klikania w utwór na liście
     override fun onBindViewHolder(holder: AudioViewHolder, position: Int) {
         holder.bind(songs[position], position)
+        holder.itemView.alpha = 0f
+        holder.itemView.animate()
+            .alpha(1f)
+            .setDuration(300)
+            .start()
     }
 
     override fun getItemCount() = songs.size
