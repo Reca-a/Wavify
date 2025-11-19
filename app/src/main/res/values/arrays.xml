@@ -24,4 +24,17 @@
         <item>shake</item>
         <item>hand</item>
     </string-array>
+
+    <!-- Czułość gestów -->
+    <string-array name="gesture_sensitivity_names">
+        <item>Niska</item>
+        <item>Średnia</item>
+        <item>Wysoka</item>
+    </string-array>
+
+    <string-array name="gesture_sensitivity_values">
+        <item>low</item>
+        <item>medium</item>
+        <item>high</item>
+    </string-array>
 </resources>

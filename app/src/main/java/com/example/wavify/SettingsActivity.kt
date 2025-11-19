@@ -1,5 +1,6 @@
 package com.example.wavify
 
+import android.content.Context
 import android.os.Bundle
 import android.view.View.GONE
 import androidx.appcompat.app.AlertDialog
@@ -10,6 +11,7 @@ import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.google.android.material.button.MaterialButton
+import androidx.core.content.edit
 
 class SettingsActivity : AppCompatActivity() {
 
@@ -36,9 +38,11 @@ class SettingsActivity : AppCompatActivity() {
 
             val themePref = findPreference<ListPreference>("pref_theme_mode")
             val gesturePref = findPreference<ListPreference>("pref_gesture_control")
+            val gestureSens = findPreference<ListPreference>("pref_gesture_sensitivity")
 
             themePref?.summary = themePref?.entry
             gesturePref?.summary = gesturePref?.entry
+            gestureSens?.summary = gestureSens?.entry
 
             // Obsługa kliknięcia w "O aplikacji"
             findPreference<Preference>("pref_about")?.setOnPreferenceClickListener {
@@ -48,8 +52,7 @@ class SettingsActivity : AppCompatActivity() {
 
             // Obsługa kliknięcia w "Tryb motywu"
             themePref?.setOnPreferenceChangeListener { preference, newValue ->
-                val newValueString = newValue.toString()
-                applyTheme(newValueString)
+                applyTheme(newValue.toString())
 
                 val index = themePref.findIndexOfValue(newValue.toString())
                 preference.summary = if (index >= 0) themePref.entries[index] else null
@@ -58,11 +61,20 @@ class SettingsActivity : AppCompatActivity() {
 
             // Obsługa kliknięcia w "Sterowanie gestami"
             gesturePref?.setOnPreferenceChangeListener { preference, newValue ->
-                val newValueString = newValue.toString()
                 // TODO zaimplementować obsługę
 
                 val index = gesturePref.findIndexOfValue(newValue.toString())
                 preference.summary = if (index >= 0) gesturePref.entries[index] else null
+                true
+            }
+
+            // Obsługa kliknięcia w "Czułość gestów"
+            gestureSens?.setOnPreferenceChangeListener { preference, newValue ->
+                val prefs = requireContext().getSharedPreferences("settings", Context.MODE_PRIVATE)
+                prefs.edit (commit = true) { putString("pref_gesture_sensitivity", newValue.toString()) }
+
+                val index = gestureSens.findIndexOfValue(newValue.toString())
+                preference.summary = if (index >= 0) gestureSens.entries[index] else null
                 true
             }
         }

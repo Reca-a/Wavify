@@ -3,6 +3,7 @@ package com.example.wavify
 import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.os.Handler
@@ -32,6 +33,9 @@ class AudioActivity : AppCompatActivity() {
     private var isUserSeeking = false
     private var isShuffleEnabled = false
     private var repeatMode = Player.REPEAT_MODE_OFF
+    private lateinit var gestureController: GestureMotionController
+    private lateinit var prefs: SharedPreferences
+    private lateinit var preferenceListener: SharedPreferences.OnSharedPreferenceChangeListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,6 +44,8 @@ class AudioActivity : AppCompatActivity() {
 
         binding = ActivityAudioBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        prefs = getSharedPreferences("settings", MODE_PRIVATE)
 
         val uriStrings = intent.getStringArrayListExtra("SONG_URIS") ?: arrayListOf()
         val titles = intent.getStringArrayListExtra("SONG_TITLES") ?: arrayListOf()
@@ -59,6 +65,14 @@ class AudioActivity : AppCompatActivity() {
             )
         }
 
+        // Gesty machania telefonem
+        gestureController = GestureMotionController(
+            context = this,
+            onNext = { nextSong() },
+            onPrevious = { previousSong() },
+            onPlayPause = { playPause() }
+        )
+
         // Uruchomienie serwisu
         val serviceIntent = Intent(this, MusicService::class.java)
         startService(serviceIntent)
@@ -74,6 +88,7 @@ class AudioActivity : AppCompatActivity() {
             try {
                 controller = controllerFuture.get()
                 initializePlayer()
+                gestureController.start()
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -81,6 +96,20 @@ class AudioActivity : AppCompatActivity() {
 
         setupTimeBar()
         startProgressUpdate()
+
+        // Aktualizowanie ustawień gestów
+        preferenceListener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+            if (key == "pref_gesture_sensitivity") {
+                val newValue = prefs.getString("pref_gesture_sensitivity", "medium")!!
+                gestureController.updateSensitivity(newValue)
+            }
+//  TODO zaimplementować gesty kamery
+//            if (key == "pref_gesture_control") {
+//                val newValue = prefs.getString("pref_gesture_control", "none")!!
+//                gestureController.updateGestureMode(newValue)
+//            }
+        }
+        prefs.registerOnSharedPreferenceChangeListener(preferenceListener)
 
         // Opóźnione przewijanie długiego tytułu utworu
         binding.songTitleText.postDelayed({
@@ -90,6 +119,8 @@ class AudioActivity : AppCompatActivity() {
         findViewById<MaterialButton>(R.id.settingsButton).setOnClickListener {
             startActivity(Intent(this, SettingsActivity::class.java))
         }
+
+
     }
 
     private fun initializePlayer() {
@@ -292,6 +323,8 @@ class AudioActivity : AppCompatActivity() {
         super.onDestroy()
         if (::controllerFuture.isInitialized) {
             MediaController.releaseFuture(controllerFuture)
+            gestureController.stop()
+            prefs.unregisterOnSharedPreferenceChangeListener(preferenceListener)
         }
         handler.removeCallbacksAndMessages(null)
     }

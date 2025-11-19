@@ -30,6 +30,10 @@
     <string name="shake">Ruch telefonu</string>
     <string name="hand">Gesty ręką przed kamerą</string>
 
+    <string name="low">Niska</string>
+    <string name="medium">Średnia</string>
+    <string name="high">Wysoka</string>
+
     <string name="about">O Wavify</string>
     <string name="about_desc">Aplikacja wykonana w ramach zajęć PUM na Uniwersytecie Rzeszowskim.
         \n\nAutor: Adrian Raczek</string>

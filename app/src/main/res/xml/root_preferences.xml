@@ -18,6 +18,15 @@
         app:entryValues="@array/gesture_control_values"
         app:defaultValue="none"/>
 
+    <!-- Czułość gestów -->
+    <ListPreference
+        app:key="pref_gesture_sensitivity"
+        app:title="Czułość gestów"
+        app:summary="@string/medium"
+        app:entries="@array/gesture_sensitivity_names"
+        app:entryValues="@array/gesture_sensitivity_values"
+        app:defaultValue="medium" />
+
     <!-- O aplikacji -->
     <Preference
         app:key="pref_about"

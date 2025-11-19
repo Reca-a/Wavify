@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity() {
 
         // Wczytanie ostatnio wybranego motywu
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
-        val theme = prefs.getString("pref_theme_mode", "system") ?: "system"
+        val theme = prefs.getString("pref_theme_mode", "system")!!
         applyTheme(theme)
 
         // Usunięcie koloru górnego paska
@@ -78,7 +78,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun applyTheme(theme: String) {
+    private fun applyTheme(theme: String) {
         when (theme) {
             "light" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             "dark" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
