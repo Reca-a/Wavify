@@ -3,6 +3,7 @@ package com.example.wavify
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import com.example.wavify.databinding.ItemAudioBinding
 
 // Klasa tworząca listę utworów
@@ -15,6 +16,11 @@ class AudioAdapter(
         fun bind(song: AudioFile, position: Int) {
             binding.titleText.text = song.title
             binding.artistText.text = if (song.artist != null && song.artist != "<unknown>") song.artist else "Nieznany artysta"
+            binding.albumArtImageView.load(song.albumArtUri) {
+                placeholder(R.drawable.default_album_art)
+                error(R.drawable.default_album_art)
+                crossfade(true)
+            }
             binding.root.setOnClickListener { onItemClick(position) }
         }
     }

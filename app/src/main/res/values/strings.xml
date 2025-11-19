@@ -1,3 +1,28 @@
 <resources>
-    <string name="app_name">Wavify</string>
+    <string name="app_name" translatable="false">Wavify</string>
+    <string name="unknown_artist">Nieznany artysta</string>
+    <string name="unknown_title">Nieznany tytuł</string>
+    <string name="song_title">Tytuł utworu</string>
+    <string name="song_author">Autor</string>
+    <string name="no_audio_files">Brak plików audio</string>
+
+    <!-- Ustawienia -->
+    <string name="settings_theme">Tryb motywu</string>
+    <string name="settings_theme_summary">Wybierz tryb kolorów aplikacji</string>
+    <string name="settings_gestures">Sterowanie gestami</string>
+    <string name="settings_gestures_summary">Wybierz sposób sterowania odtwarzaczem gestami</string>
+    <string name="settings_about">O aplikacji</string>
+    <string name="settings_about_summary">Informacje o Wavify</string>
+
+    <string name="system">Systemowy</string>
+    <string name="light">Jasny</string>
+    <string name="dark">Ciemny</string>
+
+    <string name="none">Brak</string>
+    <string name="shake">Ruch telefonu</string>
+    <string name="hand">Gesty ręką przed kamerą</string>
+
+    <string name="about">O Wavify</string>
+    <string name="about_desc">Aplikacja wykonana w ramach zajęć PUM na Uniwersytecie Rzeszowskim.
+        \n\nAutor: Adrian Raczek</string>
 </resources>

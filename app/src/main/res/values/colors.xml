@@ -1,24 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <!-- Jasny motyw -->
+    <color name="light_primary">#00686F</color>
+    <color name="light_onPrimary">#FFFFFF</color>
+    <color name="light_primaryContainer">#B3F7FF</color>
+    <color name="light_onPrimaryContainer">#001F21</color>
 
-    <color name="md_theme_light_primary">#2196F3</color>
-    <color name="md_theme_light_onPrimary">#FFFFFF</color>
+    <color name="light_secondary">#A855F7</color>
+    <color name="light_onSecondary">#FFFFFF</color>
+    <color name="light_secondaryContainer">#F4DEFF</color>
+    <color name="light_onSecondaryContainer">#2B0031</color>
 
-    <color name="md_theme_light_secondary">#03A9F4</color>
-    <color name="md_theme_light_onSecondary">#FFFFFF</color>
+    <color name="light_background">#FCFEFF</color>
+    <color name="light_onBackground">#191A1A</color>
+    <color name="light_surface">#FCFEFF</color>
+    <color name="light_onSurface">#191A1A</color>
 
-    <color name="md_theme_light_surface">#FFFFFF</color>
-    <color name="md_theme_light_onSurface">#1C1B1F</color>
+    <!-- Ciemny motyw -->
+    <color name="dark_primary">#40E8FF</color>
+    <color name="dark_onPrimary">#00363A</color>
+    <color name="dark_primaryContainer">#004F54</color>
+    <color name="dark_onPrimaryContainer">#B3F7FF</color>
 
-    <!-- Wersja ciemna -->
-    <color name="md_theme_dark_primary">#64B5F6</color>
-    <color name="md_theme_dark_onPrimary">#0D47A1</color>
+    <color name="dark_secondary">#D6A3FF</color>
+    <color name="dark_onSecondary">#4E005D</color>
+    <color name="dark_secondaryContainer">#77008F</color>
+    <color name="dark_onSecondaryContainer">#F4DEFF</color>
 
-    <color name="md_theme_dark_secondary">#4FC3F7</color>
-    <color name="md_theme_dark_onSecondary">#01579B</color>
+    <color name="dark_background">#0A0A0C</color>
+    <color name="dark_onBackground">#E1E3E4</color>
+    <color name="dark_surface">#0A0A0C</color>
+    <color name="dark_onSurface">#E1E3E4</color>
 
-    <color name="md_theme_dark_surface">#1E1E1E</color>
-    <color name="md_theme_dark_onSurface">#E3F2FD</color>
 </resources>

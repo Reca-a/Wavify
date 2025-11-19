@@ -2,7 +2,6 @@ package com.example.wavify
 
 import android.app.ActivityOptions
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.transition.Fade
 import android.transition.Slide
@@ -13,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.wavify.databinding.ActivityMainBinding
+import com.google.android.material.button.MaterialButton
 
 class MainActivity : AppCompatActivity() {
 
@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity() {
         songs = MusicRepository.getLocalAudioFiles(this)
 
         if (songs.isEmpty()) {
-            Toast.makeText(this, "Brak plików audio", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.no_audio_files), Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -44,12 +44,17 @@ class MainActivity : AppCompatActivity() {
                 putExtra("START_INDEX", position)
                 putStringArrayListExtra("SONG_URIS", ArrayList(songs.map { it.uri.toString() }))
                 putStringArrayListExtra("SONG_TITLES", ArrayList(songs.map { it.title }))
-                putStringArrayListExtra("SONG_ARTISTS", ArrayList(songs.map { it.artist ?: "Nieznany artysta" }))
+                putStringArrayListExtra("SONG_ARTISTS", ArrayList(songs.map { it.artist ?: getString(R.string.unknown_artist) }))
+                putStringArrayListExtra("ALBUM_ART_URIS", ArrayList(songs.map { it.albumArtUri?.toString() ?: "" }))
             }
             startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
         }
 
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
         binding.recyclerView.adapter = adapter
+
+        findViewById<MaterialButton>(R.id.settingsButton).setOnClickListener {
+            startActivity(Intent(this, SettingsActivity::class.java))
+        }
     }
 }

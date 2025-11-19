@@ -2,184 +2,178 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/colorSurface">
+    android:background="@drawable/gradient_background">
 
-    <com.google.android.material.card.MaterialCardView
+    <LinearLayout
+        android:id="@+id/dynamicLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:cardCornerRadius="0dp"
-        app:cardElevation="0dp"
-        android:layout_gravity="center"
-        android:backgroundTint="?attr/colorSurfaceVariant">
+        android:orientation="vertical">
 
+        <include layout="@layout/component_header"/>
+
+        <!-- Okładka albumu -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="320dp"
+            android:layout_height="320dp"
+            android:layout_gravity="center"
+            android:layout_margin="16dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="8dp">
+
+            <ImageView
+                android:id="@+id/albumArtImageView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:scaleType="centerCrop"
+                android:src="@drawable/default_album_art" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Tytuł utworu -->
+        <TextView
+            android:id="@+id/songTitleText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/song_title"
+            android:textAppearance="@style/TextAppearance.Material3.HeadlineSmall.Emphasized"
+            android:textColor="?attr/colorOnSurface"
+            android:ellipsize="marquee"
+            android:singleLine="true"
+            android:paddingHorizontal="24dp" />
+
+        <TextView
+            android:id="@+id/songArtistText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/song_author"
+            android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            android:maxLines="1"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="12dp"
+            android:paddingHorizontal="24dp" />
+
+        <!-- Slider -->
+        <com.google.android.material.slider.Slider
+            android:id="@+id/timeBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:valueFrom="0"
+            android:valueTo="100"
+            app:trackColorInactive="?attr/colorSurfaceVariant"
+            app:trackColorActive="?attr/colorPrimary"
+            app:thumbColor="?attr/colorPrimary"
+            app:tickColor="@android:color/transparent"
+            app:haloColor="@android:color/transparent"
+            app:thumbElevation="4dp"
+            app:trackHeight="8dp"
+            app:labelBehavior="gone"
+            android:layout_marginBottom="4dp"
+            android:paddingHorizontal="24dp" />
+
+        <!-- Czas -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="24dp"
+            android:layout_marginBottom="24dp">
+
+            <TextView
+                android:id="@+id/currentTimeText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="00:00"
+                android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/totalTimeText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="00:00"
+                android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Przyciski -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            >
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingHorizontal="24dp">
 
-            <TextView
-                android:id="@+id/appTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/app_name"
-                android:textAppearance="@style/TextAppearance.Material3.HeadlineMedium"
-                android:textColor="?attr/colorOnPrimaryContainer"
-                android:textAlignment="center"
-                android:fontFamily="sans-serif-medium"
-                android:letterSpacing="0.02"
-                android:layout_marginBottom="16dp"
-                android:paddingTop="40dp"
-                android:backgroundTint="?attr/colorPrimaryContainer"
-                android:paddingBottom="16dp"/>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/shuffleButton"
+                style="@style/Widget.Material3.Button.Icon"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:background="@drawable/custom_ripple"
+                app:iconTint="?attr/colorOnPrimaryContainer"
+                app:iconGravity="textEnd"
+                app:icon="@drawable/ic_shuffle_32"
+                app:iconSize="24dp"
+                app:cornerRadius="32dp"/>
 
-            <androidx.media3.ui.PlayerView
-                android:id="@+id/playerView"
-                android:layout_width="match_parent"
-                android:layout_height="320dp"
-                android:layout_margin="16dp"
-                app:show_buffering="when_playing"
-                app:use_controller="false"
-                android:elevation="4dp"
-                android:paddingHorizontal="24dp">
-            </androidx.media3.ui.PlayerView>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/prevButton"
+                style="@style/Widget.Material3.Button.Icon"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_marginHorizontal="15dp"
+                android:background="@drawable/custom_ripple"
+                app:iconTint="?attr/colorOnPrimaryContainer"
+                app:iconGravity="textEnd"
+                app:icon="@drawable/ic_skip_previous_32"
+                app:iconSize="40dp"
+                app:cornerRadius="32dp"/>
 
-            <TextView
-                android:id="@+id/songTitleText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Tytuł utworu"
-                android:textAppearance="@style/TextAppearance.Material3.HeadlineSmall"
-                android:textColor="?attr/colorOnSurface"
-                android:ellipsize="marquee"
-                android:marqueeRepeatLimit="marquee_forever"
-                android:maxLines="1"
-                android:paddingHorizontal="24dp"/>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/playPauseButton"
+                style="@style/Widget.Material3.Button.Icon"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:background="@drawable/custom_ripple"
+                app:iconTint="?attr/colorOnPrimaryContainer"
+                app:iconGravity="textEnd"
+                app:icon="@drawable/ic_pause_32"
+                app:iconSize="56dp"
+                app:cornerRadius="32dp"/>
 
-            <TextView
-                android:id="@+id/songArtistText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Artysta"
-                android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
-                android:textColor="?attr/colorOnSurfaceVariant"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:layout_marginTop="4dp"
-                android:layout_marginBottom="12dp"
-                android:paddingHorizontal="24dp"/>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/nextButton"
+                style="@style/Widget.Material3.Button.Icon"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_marginHorizontal="15dp"
+                android:background="@drawable/custom_ripple"
+                app:iconTint="?attr/colorOnPrimaryContainer"
+                app:iconGravity="textEnd"
+                app:icon="@drawable/ic_skip_next_32"
+                app:iconSize="40dp"
+                app:cornerRadius="32dp"/>
 
-            <com.google.android.material.slider.Slider
-                android:id="@+id/timeBar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:valueFrom="0"
-                android:valueTo="100"
-                app:trackColorInactive="?attr/colorSurfaceVariant"
-                app:trackColorActive="?attr/colorPrimary"
-                app:thumbColor="?attr/colorPrimary"
-                android:layout_marginBottom="4dp"
-                android:paddingHorizontal="24dp"/>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/constraintLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:paddingHorizontal="24dp">
-
-                <TextView
-                    android:id="@+id/currentTimeText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:text="00:00"
-                    android:textAppearance="@style/TextAppearance.Material3.BodySmall"
-                    android:textColor="?attr/colorOnSurfaceVariant"
-                    app:layout_constraintTop_toTopOf="@id/totalTimeText"
-                    app:layout_constraintStart_toStartOf="parent" />
-
-                <TextView
-                    android:id="@+id/totalTimeText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    android:text="00:00"
-                    android:textAlignment="textEnd"
-                    android:textAppearance="@style/TextAppearance.Material3.BodySmall"
-                    android:textColor="?attr/colorOnSurfaceVariant"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/currentTimeText" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:paddingHorizontal="24dp">
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/shuffleButton"
-                    style="@style/Widget.Material3.Button.Icon"
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
-                    app:icon="@drawable/ic_shuffle_32"
-                    app:iconGravity="textEnd"
-                    app:iconSize="24dp"
-                    app:iconTint="?attr/colorOnPrimaryContainer"
-                    android:backgroundTint="?attr/colorPrimaryContainer"/>
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/prevButton"
-                    style="@style/Widget.Material3.Button.Icon"
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
-                    app:icon="@drawable/ic_skip_previous_32"
-                    app:iconGravity="textEnd"
-                    app:iconSize="24dp"
-                    app:iconTint="?attr/colorOnPrimaryContainer"
-                    android:backgroundTint="?attr/colorPrimaryContainer"
-                    android:layout_marginHorizontal="15dp"/>
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/playPauseButton"
-                    style="@style/Widget.Material3.Button.Icon"
-                    android:layout_width="72dp"
-                    android:layout_height="72dp"
-                    app:icon="@drawable/ic_pause_32"
-                    app:iconGravity="textEnd"
-                    app:iconSize="32dp"
-                    app:iconTint="?attr/colorOnPrimaryContainer"
-                    android:backgroundTint="?attr/colorPrimaryContainer"/>
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/nextButton"
-                    style="@style/Widget.Material3.Button.Icon"
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
-                    app:icon="@drawable/ic_skip_next_32"
-                    app:iconGravity="textEnd"
-                    app:iconSize="24dp"
-                    app:iconTint="?attr/colorOnPrimaryContainer"
-                    android:backgroundTint="?attr/colorPrimaryContainer"
-                    android:layout_marginHorizontal="15dp"/>
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/repeatButton"
-                    style="@style/Widget.Material3.Button.Icon"
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
-                    app:icon="@drawable/ic_repeat_32"
-                    app:iconGravity="textEnd"
-                    app:iconSize="24dp"
-                    app:iconTint="?attr/colorOnPrimaryContainer"
-                    android:backgroundTint="?attr/colorPrimaryContainer"/>
-            </LinearLayout>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/repeatButton"
+                style="@style/Widget.Material3.Button.Icon"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:background="@drawable/custom_ripple"
+                app:iconTint="?attr/colorOnPrimaryContainer"
+                app:iconGravity="textEnd"
+                app:icon="@drawable/ic_repeat_32"
+                app:iconSize="24dp"
+                app:cornerRadius="32dp"/>
         </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

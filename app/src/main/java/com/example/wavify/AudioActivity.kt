@@ -1,8 +1,7 @@
 package com.example.wavify
 
+import android.content.Intent
 import android.content.res.ColorStateList
-import android.graphics.Color
-import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -11,17 +10,17 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.media3.exoplayer.ExoPlayer
 import com.example.wavify.databinding.ActivityAudioBinding
 import androidx.media3.common.MediaItem
-import androidx.core.net.toUri
 import androidx.core.view.WindowCompat
 import androidx.media3.common.Player
+import coil.load
 import com.google.android.material.slider.Slider
+import androidx.core.net.toUri
+import com.google.android.material.button.MaterialButton
 
 class AudioActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAudioBinding
     private var player: ExoPlayer? = null
-    private var uris: List<Uri> = emptyList()
-    private var titles: List<String> = emptyList()
-    private var artists: List<String> = emptyList()
+    private var songs: List<AudioFile> = emptyList()
     private val handler = Handler(Looper.getMainLooper())
     private var startIndex: Int = 0
     private var isUserSeeking = false
@@ -36,16 +35,27 @@ class AudioActivity : AppCompatActivity() {
         binding = ActivityAudioBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Odbieranie danych
         val uriStrings = intent.getStringArrayListExtra("SONG_URIS") ?: arrayListOf()
-        uris = uriStrings.map { it.toUri() }
-        titles = intent.getStringArrayListExtra("SONG_TITLES") ?: arrayListOf()
-        artists = intent.getStringArrayListExtra("SONG_ARTISTS") ?: arrayListOf()
+        val titles = intent.getStringArrayListExtra("SONG_TITLES") ?: arrayListOf()
+        val artists = intent.getStringArrayListExtra("SONG_ARTISTS") ?: arrayListOf()
+        val albumArtStrings = intent.getStringArrayListExtra("ALBUM_ART_URIS") ?: arrayListOf()
         startIndex = intent.getIntExtra("START_INDEX", 0)
+
+        // Rekonstrukcja obiektów AudioFile
+        songs = uriStrings.indices.map { i ->
+            AudioFile(
+                uri = uriStrings[i].toUri(),
+                title = titles.getOrNull(i) ?: getString(R.string.unknown_title),
+                artist = artists.getOrNull(i),
+                albumArtUri = albumArtStrings.getOrNull(i)?.let {
+                    if (it.isNotEmpty()) it.toUri() else null
+                }
+            )
+        }
 
         // Inicjalizacja ExoPlayera
         player = ExoPlayer.Builder(this).build().apply {
-            val items = uris.map { MediaItem.fromUri(it) }
+            val items = songs.map { MediaItem.fromUri(it.uri) }
             setMediaItems(items, startIndex, 0)
             prepare()
             play()
@@ -53,24 +63,52 @@ class AudioActivity : AppCompatActivity() {
             binding.playPauseButton.setOnClickListener { playPause() }
             binding.nextButton.setOnClickListener { nextSong() }
             binding.prevButton.setOnClickListener { previousSong() }
-            binding.songTitleText.text = titles[startIndex]
-            binding.songArtistText.text = artists[startIndex]
+
+            // Ustawienie początkowych danych
+            updateSongInfo(startIndex)
+
             binding.shuffleButton.setOnClickListener { toggleShuffle() }
             binding.repeatButton.setOnClickListener { toggleRepeat() }
         }
 
-        binding.playerView.player = player
-
         setupTimeBar()
         startProgressUpdate()
-        
+
+        // Opóźnione przewijanie długiego tytułu utworu
+        binding.songTitleText.postDelayed({
+            binding.songTitleText.isSelected = true
+        }, 3000)
+
+        findViewById<MaterialButton>(R.id.settingsButton).setOnClickListener {
+            startActivity(Intent(this, SettingsActivity::class.java))
+        }
+
         player?.addListener(object : Player.Listener {
             override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
                 val index = player?.currentMediaItemIndex ?: 0
-                binding.songTitleText.text = titles[index]
-                binding.songArtistText.text = artists.getOrNull(index) ?: "Nieznany artysta"
+                updateSongInfo(index)
             }
         })
+    }
+
+    // Funkcja do aktualizacji informacji o utworze
+    private fun updateSongInfo(index: Int) {
+        if (index in songs.indices) {
+            val song = songs[index]
+            binding.songTitleText.text = song.title
+            if (song.artist != null && song.artist != "<unknown>") {
+                binding.songArtistText.text = song.artist
+            } else {
+                binding.songArtistText.text = getString(R.string.unknown_artist)
+            }
+
+            binding.albumArtImageView.load(song.albumArtUri) {
+                placeholder(R.drawable.default_album_art)
+                error(R.drawable.default_album_art)
+                crossfade(true)
+            }
+
+        }
     }
 
     private fun playPause(){
@@ -101,6 +139,7 @@ class AudioActivity : AppCompatActivity() {
                 binding.currentTimeText.text = formatTime(value.toLong())
             }
         }
+
         // Listenery do zatrzymywania aktualizacji funkcji startProgressUpdate() podczas interakcji użytkownika
         binding.timeBar.addOnSliderTouchListener(object : Slider.OnSliderTouchListener {
             override fun onStartTrackingTouch(slider: Slider) {
@@ -150,7 +189,7 @@ class AudioActivity : AppCompatActivity() {
         binding.shuffleButton.iconTint = ColorStateList.valueOf(
             getThemeColor(
                 if (isShuffleEnabled) com.google.android.material.R.attr.colorOnSecondary
-                else com.google.android.material.R.attr.colorOnSurfaceVariant
+                else com.google.android.material.R.attr.colorOnPrimaryContainer
             )
         )
     }
@@ -174,7 +213,7 @@ class AudioActivity : AppCompatActivity() {
         binding.repeatButton.iconTint = ColorStateList.valueOf(
             getThemeColor(
                 if (repeatMode != Player.REPEAT_MODE_OFF) com.google.android.material.R.attr.colorOnSecondary
-                else com.google.android.material.R.attr.colorOnSurfaceVariant
+                else com.google.android.material.R.attr.colorOnPrimaryContainer
             )
         )
 

@@ -2,49 +2,30 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="?attr/colorSurface">
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient_background">
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:cardCornerRadius="12dp"
-        app:cardElevation="2dp"
-        android:backgroundTint="?attr/colorSurfaceVariant">
+        android:layout_height="wrap_content"
+        app:cardBackgroundColor="@android:color/transparent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/appTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/app_name"
-                android:textAppearance="@style/TextAppearance.Material3.HeadlineMedium"
-                android:textColor="?attr/colorOnPrimaryContainer"
-                android:textAlignment="center"
-                android:fontFamily="sans-serif-medium"
-                android:letterSpacing="0.02"
-                android:layout_marginBottom="16dp"
-                android:paddingTop="40dp"
-                android:backgroundTint="?attr/colorPrimaryContainer"
-                android:paddingBottom="16dp"/>
+            <include layout="@layout/component_header"/>
 
+            <!-- Lista utworów -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:foreground="?attr/selectableItemBackground"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:clickable="true"
-                android:focusable="true"
+                android:layout_weight="1"
                 android:paddingHorizontal="24dp"
-                android:layout_weight="1"/>
-
+                android:paddingBottom="32dp"/>
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 

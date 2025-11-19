@@ -7,5 +7,6 @@ import java.io.Serializable
 data class AudioFile(
     val uri: Uri,
     val title: String,
-    val artist: String?
+    val artist: String? = null,
+    val albumArtUri: Uri? = null
 ) : Serializable

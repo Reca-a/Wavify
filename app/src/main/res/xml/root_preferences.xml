@@ -1,0 +1,27 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!-- Tryb motywu -->
+    <ListPreference
+        app:key="pref_theme_mode"
+        app:title="@string/settings_theme"
+        app:summary="@string/settings_theme_summary"
+        app:entries="@array/theme_mode_names"
+        app:entryValues="@array/theme_mode_values"
+        app:defaultValue="system"/>
+
+    <!-- Gesty do sterowania odtwarzaczem -->
+    <ListPreference
+        app:key="pref_gesture_control"
+        app:title="@string/settings_gestures"
+        app:summary="@string/settings_gestures_summary"
+        app:entries="@array/gesture_control_names"
+        app:entryValues="@array/gesture_control_values"
+        app:defaultValue="none"/>
+
+    <!-- O aplikacji -->
+    <Preference
+        app:key="pref_about"
+        app:title="@string/settings_about"
+        app:summary="@string/settings_about_summary"/>
+
+</PreferenceScreen>

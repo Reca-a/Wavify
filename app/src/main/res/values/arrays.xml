@@ -1,0 +1,27 @@
+<resources>
+    <!-- Wybór trybu motywu -->
+    <string-array name="theme_mode_names">
+        <item>@string/system</item>
+        <item>Jasny</item>
+        <item>Ciemny</item>
+    </string-array>
+
+    <string-array name="theme_mode_values">
+        <item>system</item>
+        <item>light</item>
+        <item>dark</item>
+    </string-array>
+
+    <!-- Gesty do sterowania odtwarzaczem -->
+    <string-array name="gesture_control_names">
+        <item>@string/none</item>
+        <item>@string/hand</item>
+        <item>@string/hand</item>
+    </string-array>
+
+    <string-array name="gesture_control_values">
+        <item>none</item>
+        <item>shake</item>
+        <item>hand</item>
+    </string-array>
+</resources>
