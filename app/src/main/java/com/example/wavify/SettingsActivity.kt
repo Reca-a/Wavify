@@ -34,6 +34,12 @@ class SettingsActivity : AppCompatActivity() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.root_preferences, rootKey)
 
+            val themePref = findPreference<ListPreference>("pref_theme_mode")
+            val gesturePref = findPreference<ListPreference>("pref_gesture_control")
+
+            themePref?.summary = themePref?.entry
+            gesturePref?.summary = gesturePref?.entry
+
             // Obsługa kliknięcia w "O aplikacji"
             findPreference<Preference>("pref_about")?.setOnPreferenceClickListener {
                 showAboutDialog()
@@ -41,8 +47,22 @@ class SettingsActivity : AppCompatActivity() {
             }
 
             // Obsługa kliknięcia w "Tryb motywu"
-            findPreference<ListPreference>("pref_theme_mode")?.setOnPreferenceChangeListener { _, newValue ->
-                applyTheme(newValue.toString())
+            themePref?.setOnPreferenceChangeListener { preference, newValue ->
+                val newValueString = newValue.toString()
+                applyTheme(newValueString)
+
+                val index = themePref.findIndexOfValue(newValue.toString())
+                preference.summary = if (index >= 0) themePref.entries[index] else null
+                true
+            }
+
+            // Obsługa kliknięcia w "Sterowanie gestami"
+            gesturePref?.setOnPreferenceChangeListener { preference, newValue ->
+                val newValueString = newValue.toString()
+                // TODO zaimplementować obsługę
+
+                val index = gesturePref.findIndexOfValue(newValue.toString())
+                preference.summary = if (index >= 0) gesturePref.entries[index] else null
                 true
             }
         }

@@ -61,7 +61,6 @@ object MusicRepository {
                     id
                 )
 
-                // Tworzenie URI do okładki albumu
                 val albumArtUri = ContentUris.withAppendedId(
                     "content://media/external/audio/albumart".toUri(),
                     albumId

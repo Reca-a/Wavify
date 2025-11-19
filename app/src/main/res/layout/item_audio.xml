@@ -5,23 +5,19 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:paddingVertical="12dp"
+    android:paddingHorizontal="24dp"
     android:background="?attr/selectableItemBackground">
 
     <!-- Obraz albumu -->
-    <com.google.android.material.card.MaterialCardView
+    <ImageView
+        android:id="@+id/albumArtImageView"
         android:layout_width="40dp"
         android:layout_height="40dp"
+        android:contentDescription="@string/album_art"
+        android:scaleType="centerCrop"
         android:layout_gravity="center"
-        android:layout_marginEnd="12dp">
-
-        <ImageView
-            android:id="@+id/albumArtImageView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:scaleType="centerCrop"
-            android:src="@drawable/default_album_art" />
-
-    </com.google.android.material.card.MaterialCardView>
+        android:src="@drawable/default_album_art"
+        android:layout_marginEnd="12dp"/>
 
     <!-- Tytuł i autor -->
     <LinearLayout
@@ -42,7 +38,7 @@
             android:id="@+id/artistText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/song_author"
+            android:text="@string/song_artist"
             android:textSize="14sp"
             android:textColor="?attr/colorOnSurfaceVariant" />
 

@@ -1,16 +1,24 @@
 <resources>
     <string name="app_name" translatable="false">Wavify</string>
+    <string name="app_logo">Logo</string>
     <string name="unknown_artist">Nieznany artysta</string>
     <string name="unknown_title">Nieznany tytuł</string>
     <string name="song_title">Tytuł utworu</string>
-    <string name="song_author">Autor</string>
+    <string name="song_artist">Artysta</string>
+    <string name="album_art">Okładka albumu</string>
     <string name="no_audio_files">Brak plików audio</string>
+
+    <!-- Opisy przycisków -->
+    <string name="settings_button">Ustawienia</string>
+    <string name="shuffle_button">Losowa kolejność</string>
+    <string name="prev_button">Poprzedni</string>
+    <string name="play_pause_button">Graj lub pauzuj</string>
+    <string name="next_button">Następny</string>
+    <string name="repeat_button">Powtarzaj utwór</string>
 
     <!-- Ustawienia -->
     <string name="settings_theme">Tryb motywu</string>
-    <string name="settings_theme_summary">Wybierz tryb kolorów aplikacji</string>
     <string name="settings_gestures">Sterowanie gestami</string>
-    <string name="settings_gestures_summary">Wybierz sposób sterowania odtwarzaczem gestami</string>
     <string name="settings_about">O aplikacji</string>
     <string name="settings_about_summary">Informacje o Wavify</string>
 

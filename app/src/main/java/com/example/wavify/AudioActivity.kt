@@ -1,5 +1,7 @@
 package com.example.wavify
 
+import android.annotation.SuppressLint
+import android.content.ComponentName
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
@@ -7,7 +9,6 @@ import android.os.Handler
 import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.media3.exoplayer.ExoPlayer
 import com.example.wavify.databinding.ActivityAudioBinding
 import androidx.media3.common.MediaItem
 import androidx.core.view.WindowCompat
@@ -15,11 +16,16 @@ import androidx.media3.common.Player
 import coil.load
 import com.google.android.material.slider.Slider
 import androidx.core.net.toUri
+import androidx.media3.session.MediaController
+import androidx.media3.session.SessionToken
 import com.google.android.material.button.MaterialButton
+import com.google.common.util.concurrent.ListenableFuture
+import com.google.common.util.concurrent.MoreExecutors
 
 class AudioActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAudioBinding
-    private var player: ExoPlayer? = null
+    private lateinit var controller: MediaController
+    private lateinit var controllerFuture: ListenableFuture<MediaController>
     private var songs: List<AudioFile> = emptyList()
     private val handler = Handler(Looper.getMainLooper())
     private var startIndex: Int = 0
@@ -53,23 +59,25 @@ class AudioActivity : AppCompatActivity() {
             )
         }
 
-        // Inicjalizacja ExoPlayera
-        player = ExoPlayer.Builder(this).build().apply {
-            val items = songs.map { MediaItem.fromUri(it.uri) }
-            setMediaItems(items, startIndex, 0)
-            prepare()
-            play()
+        // Uruchomienie serwisu
+        val serviceIntent = Intent(this, MusicService::class.java)
+        startService(serviceIntent)
 
-            binding.playPauseButton.setOnClickListener { playPause() }
-            binding.nextButton.setOnClickListener { nextSong() }
-            binding.prevButton.setOnClickListener { previousSong() }
+        // Połączenie z MediaController
+        val sessionToken = SessionToken(
+            this,
+            ComponentName(this, MusicService::class.java)
+        )
 
-            // Ustawienie początkowych danych
-            updateSongInfo(startIndex)
-
-            binding.shuffleButton.setOnClickListener { toggleShuffle() }
-            binding.repeatButton.setOnClickListener { toggleRepeat() }
-        }
+        controllerFuture = MediaController.Builder(this, sessionToken).buildAsync()
+        controllerFuture.addListener({
+            try {
+                controller = controllerFuture.get()
+                initializePlayer()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }, MoreExecutors.directExecutor())
 
         setupTimeBar()
         startProgressUpdate()
@@ -82,11 +90,58 @@ class AudioActivity : AppCompatActivity() {
         findViewById<MaterialButton>(R.id.settingsButton).setOnClickListener {
             startActivity(Intent(this, SettingsActivity::class.java))
         }
+    }
 
-        player?.addListener(object : Player.Listener {
+    private fun initializePlayer() {
+        // Tworzenie listy utworów
+        val items = songs.map { song ->
+            MediaItem.Builder()
+                .setUri(song.uri)
+                .setMediaMetadata(
+                    androidx.media3.common.MediaMetadata.Builder()
+                        .setTitle(song.title)
+                        .setArtist(
+                            if (!song.artist.isNullOrEmpty() && song.artist != "<unknown>")
+                                song.artist
+                            else
+                                R.string.unknown_artist.toString()
+                        )
+                        .setArtworkUri(
+                            song.albumArtUri ?: "@drawable/default_album_art.jpg".toUri()           // TODO Do naprawy lub usunięcia
+                        )
+                        .build()
+                )
+                .build()
+        }
+
+        controller.setMediaItems(items, startIndex, 0)
+        controller.prepare()
+        controller.play()
+
+        // Listenery przycisków odtwarzacza
+        binding.playPauseButton.setOnClickListener { playPause() }
+        binding.nextButton.setOnClickListener { nextSong() }
+        binding.prevButton.setOnClickListener { previousSong() }
+        binding.shuffleButton.setOnClickListener { toggleShuffle() }
+        binding.repeatButton.setOnClickListener { toggleRepeat() }
+
+        // Ustawienie początkowych danych
+        updateSongInfo(startIndex)
+
+        // Listener dla odtwarzacza
+        controller.addListener(object : Player.Listener {
+            // Zmiana utworu
             override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
-                val index = player?.currentMediaItemIndex ?: 0
+                val index = controller.currentMediaItemIndex
                 updateSongInfo(index)
+            }
+
+            // Pauza / odtworzenie
+            override fun onIsPlayingChanged(isPlaying: Boolean) {
+                binding.playPauseButton.setIconResource(
+                    if (isPlaying) R.drawable.ic_pause_32
+                    else R.drawable.ic_play_32
+                )
             }
         })
     }
@@ -96,7 +151,7 @@ class AudioActivity : AppCompatActivity() {
         if (index in songs.indices) {
             val song = songs[index]
             binding.songTitleText.text = song.title
-            if (song.artist != null && song.artist != "<unknown>") {
+            if (!song.artist.isNullOrEmpty() && song.artist != "<unknown>") {
                 binding.songArtistText.text = song.artist
             } else {
                 binding.songArtistText.text = getString(R.string.unknown_artist)
@@ -107,28 +162,27 @@ class AudioActivity : AppCompatActivity() {
                 error(R.drawable.default_album_art)
                 crossfade(true)
             }
-
         }
     }
 
-    private fun playPause(){
-        player?.let {
-            if (it.isPlaying) {
-                it.pause()
-                binding.playPauseButton.setIconResource(R.drawable.ic_play_32)
-            } else {
-                it.play()
-                binding.playPauseButton.setIconResource(R.drawable.ic_pause_32)
-            }
+    private fun playPause() {
+        if (!::controller.isInitialized) return
+
+        if (controller.isPlaying) {
+            controller.pause()
+        } else {
+            controller.play()
         }
     }
 
     private fun nextSong() {
-        player?.seekToNextMediaItem()
+        if (!::controller.isInitialized) return
+        controller.seekToNextMediaItem()
     }
 
     private fun previousSong() {
-        player?.seekToPreviousMediaItem()
+        if (!::controller.isInitialized) return
+        controller.seekToPreviousMediaItem()
     }
 
     // Funkcja wczytująca slidebar z czasem utworu
@@ -147,7 +201,9 @@ class AudioActivity : AppCompatActivity() {
             }
 
             override fun onStopTrackingTouch(slider: Slider) {
-                player?.seekTo(slider.value.toLong())
+                if (::controller.isInitialized) {
+                    controller.seekTo(slider.value.toLong())
+                }
                 isUserSeeking = false
             }
         })
@@ -157,22 +213,14 @@ class AudioActivity : AppCompatActivity() {
     private fun startProgressUpdate() {
         handler.post(object : Runnable {
             override fun run() {
-                if (!isUserSeeking) {
-                    val currentPos = player?.currentPosition
-                    val duration = player?.duration
+                if (::controller.isInitialized && !isUserSeeking) {
+                    val currentPos = controller.currentPosition
+                    val duration = controller.duration
 
-                    if (duration != null && duration > 0) {
+                    if (duration > 0) {
                         binding.timeBar.valueTo = duration.toFloat()
-                        if (currentPos != null) {
-                            binding.timeBar.value = currentPos.toFloat()
-                        } else {
-                            binding.timeBar.value = 0F
-                        }
-                        if (currentPos != null ) {
-                            binding.currentTimeText.text = formatTime(currentPos)
-                        } else {
-                            binding.currentTimeText.text = "00:00"
-                        }
+                        binding.timeBar.value = currentPos.toFloat()
+                        binding.currentTimeText.text = formatTime(currentPos)
                         binding.totalTimeText.text = formatTime(duration)
                     }
                 }
@@ -183,8 +231,10 @@ class AudioActivity : AppCompatActivity() {
 
     // Przełączanie losowej kolejności utworów
     private fun toggleShuffle() {
+        if (!::controller.isInitialized) return
+
         isShuffleEnabled = !isShuffleEnabled
-        player?.shuffleModeEnabled = isShuffleEnabled
+        controller.shuffleModeEnabled = isShuffleEnabled
 
         binding.shuffleButton.iconTint = ColorStateList.valueOf(
             getThemeColor(
@@ -196,6 +246,8 @@ class AudioActivity : AppCompatActivity() {
 
     // Przełączanie powtarzania utworów
     private fun toggleRepeat() {
+        if (!::controller.isInitialized) return
+
         repeatMode = when (repeatMode) {
             Player.REPEAT_MODE_OFF -> {
                 binding.repeatButton.icon = AppCompatResources.getDrawable(this, R.drawable.ic_repeat_one_32)
@@ -217,7 +269,7 @@ class AudioActivity : AppCompatActivity() {
             )
         )
 
-        player?.repeatMode = repeatMode
+        controller.repeatMode = repeatMode
     }
 
     // Funkcja pomocnicza dla toggleRepeat() oraz toggleShuffle()
@@ -228,6 +280,7 @@ class AudioActivity : AppCompatActivity() {
     }
 
     // Funkcja pomocnicza do formatowania wyświetlanego czasu
+    @SuppressLint("DefaultLocale")
     private fun formatTime(millis: Long): String {
         val seconds = (millis / 1000) % 60
         val minutes = (millis / (1000 * 60)) % 60
@@ -237,8 +290,9 @@ class AudioActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        player?.release()
-        player = null
+        if (::controllerFuture.isInitialized) {
+            MediaController.releaseFuture(controllerFuture)
+        }
         handler.removeCallbacksAndMessages(null)
     }
 }

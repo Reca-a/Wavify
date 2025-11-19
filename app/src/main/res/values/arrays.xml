@@ -15,7 +15,7 @@
     <!-- Gesty do sterowania odtwarzaczem -->
     <string-array name="gesture_control_names">
         <item>@string/none</item>
-        <item>@string/hand</item>
+        <item>@string/shake</item>
         <item>@string/hand</item>
     </string-array>
 

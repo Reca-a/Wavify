@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import coil.request.CachePolicy
 import com.example.wavify.databinding.ItemAudioBinding
 
 // Klasa tworząca listę utworów
@@ -20,6 +21,8 @@ class AudioAdapter(
                 placeholder(R.drawable.default_album_art)
                 error(R.drawable.default_album_art)
                 crossfade(true)
+                memoryCachePolicy(CachePolicy.ENABLED)
+                diskCachePolicy(CachePolicy.ENABLED)
             }
             binding.root.setOnClickListener { onItemClick(position) }
         }

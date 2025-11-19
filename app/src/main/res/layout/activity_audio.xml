@@ -2,6 +2,7 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/gradient_background">
@@ -16,8 +17,8 @@
 
         <!-- Okładka albumu -->
         <com.google.android.material.card.MaterialCardView
-            android:layout_width="320dp"
-            android:layout_height="320dp"
+            android:layout_width="360dp"
+            android:layout_height="360dp"
             android:layout_gravity="center"
             android:layout_margin="16dp"
             app:cardCornerRadius="16dp"
@@ -28,6 +29,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
+                android:contentDescription="@string/album_art"
                 android:scaleType="centerCrop"
                 android:src="@drawable/default_album_art" />
 
@@ -43,13 +45,14 @@
             android:textColor="?attr/colorOnSurface"
             android:ellipsize="marquee"
             android:singleLine="true"
-            android:paddingHorizontal="24dp" />
+            android:paddingHorizontal="24dp"
+            android:layout_marginTop="24dp"/>
 
         <TextView
             android:id="@+id/songArtistText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/song_author"
+            android:text="@string/song_artist"
             android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
             android:textColor="?attr/colorOnSurfaceVariant"
             android:maxLines="1"
@@ -90,7 +93,8 @@
                 android:textAppearance="@style/TextAppearance.Material3.BodySmall"
                 android:textColor="?attr/colorOnSurfaceVariant"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="HardcodedText" />
 
             <TextView
                 android:id="@+id/totalTimeText"
@@ -100,7 +104,8 @@
                 android:textAppearance="@style/TextAppearance.Material3.BodySmall"
                 android:textColor="?attr/colorOnSurfaceVariant"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="HardcodedText" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <!-- Przyciski -->
@@ -116,6 +121,7 @@
                 style="@style/Widget.Material3.Button.Icon"
                 android:layout_width="56dp"
                 android:layout_height="56dp"
+                android:contentDescription="@string/shuffle_button"
                 android:background="@drawable/custom_ripple"
                 app:iconTint="?attr/colorOnPrimaryContainer"
                 app:iconGravity="textEnd"
@@ -128,6 +134,7 @@
                 style="@style/Widget.Material3.Button.Icon"
                 android:layout_width="64dp"
                 android:layout_height="64dp"
+                android:contentDescription="@string/prev_button"
                 android:layout_marginHorizontal="15dp"
                 android:background="@drawable/custom_ripple"
                 app:iconTint="?attr/colorOnPrimaryContainer"
@@ -141,6 +148,7 @@
                 style="@style/Widget.Material3.Button.Icon"
                 android:layout_width="72dp"
                 android:layout_height="72dp"
+                android:contentDescription="@string/play_pause_button"
                 android:background="@drawable/custom_ripple"
                 app:iconTint="?attr/colorOnPrimaryContainer"
                 app:iconGravity="textEnd"
@@ -153,6 +161,7 @@
                 style="@style/Widget.Material3.Button.Icon"
                 android:layout_width="64dp"
                 android:layout_height="64dp"
+                android:contentDescription="@string/next_button"
                 android:layout_marginHorizontal="15dp"
                 android:background="@drawable/custom_ripple"
                 app:iconTint="?attr/colorOnPrimaryContainer"
@@ -166,6 +175,7 @@
                 style="@style/Widget.Material3.Button.Icon"
                 android:layout_width="56dp"
                 android:layout_height="56dp"
+                android:contentDescription="@string/repeat_button"
                 android:background="@drawable/custom_ripple"
                 app:iconTint="?attr/colorOnPrimaryContainer"
                 app:iconGravity="textEnd"
