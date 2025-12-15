@@ -32,6 +32,7 @@
         <activity
             android:name=".AudioActivity"
             android:screenOrientation="portrait"
+            android:launchMode="singleTop"
             tools:ignore="DiscouragedApi,LockedOrientationActivity"/>
         <activity
             android:name=".SettingsActivity"

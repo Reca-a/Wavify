@@ -23,8 +23,10 @@
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
-                android:paddingBottom="32dp"/>
+                android:layout_weight="1"/>
+
+            <include layout="@layout/component_bottom_player"/>
+
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 

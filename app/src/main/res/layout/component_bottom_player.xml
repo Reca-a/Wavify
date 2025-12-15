@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/bottom_player"
+    android:layout_width="match_parent"
+    android:layout_height="80dp"
+    android:padding="12dp"
+    android:paddingBottom="24dp"
+    android:orientation="horizontal"
+    android:background="@drawable/gradient_header"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+    <ImageView
+        android:id="@+id/albumArtBottom"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="center"
+        android:contentDescription="@string/album_art"
+        android:scaleType="centerCrop"
+        android:src="@drawable/default_album_art"
+        android:layout_marginBottom="8dp"/>
+
+    <LinearLayout
+        android:layout_width="270dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_marginStart="12dp"
+        android:layout_gravity="center_vertical"
+        android:padding="4dp">
+
+        <TextView
+            android:id="@+id/songTitleBottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/song_title"
+            android:textAppearance="@style/TextAppearance.Material3.BodyMedium.Emphasized"
+            android:textColor="?attr/colorOnSurface"
+            android:ellipsize="marquee"
+            android:singleLine="true"/>
+
+        <TextView
+            android:id="@+id/songArtistText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/song_artist"
+            android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            android:maxLines="1" />
+
+    </LinearLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/playPauseButton"
+        style="@style/Widget.Material3.Button.Icon"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:contentDescription="@string/play_pause_button"
+        android:background="@drawable/custom_ripple"
+        app:iconTint="?attr/colorOnPrimaryContainer"
+        app:iconGravity="textEnd"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="8dp"
+        app:icon="@drawable/ic_pause_32"
+        app:iconSize="32dp"
+        app:cornerRadius="32dp"/>
+</LinearLayout>

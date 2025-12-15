@@ -45,8 +45,10 @@ class AudioActivity : AppCompatActivity() {
         binding = ActivityAudioBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Odczyt zapisanych ustawień
         prefs = getSharedPreferences("settings", MODE_PRIVATE)
 
+        // Odczyt danych z intent
         val uriStrings = intent.getStringArrayListExtra("SONG_URIS") ?: arrayListOf()
         val titles = intent.getStringArrayListExtra("SONG_TITLES") ?: arrayListOf()
         val artists = intent.getStringArrayListExtra("SONG_ARTISTS") ?: arrayListOf()
@@ -138,7 +140,7 @@ class AudioActivity : AppCompatActivity() {
                                 R.string.unknown_artist.toString()
                         )
                         .setArtworkUri(
-                            song.albumArtUri ?: "@drawable/default_album_art.jpg".toUri()           // TODO Do naprawy lub usunięcia
+                            song.albumArtUri ?: "@drawable/default_album_art.jpg".toUri()
                         )
                         .build()
                 )

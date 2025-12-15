@@ -33,4 +33,9 @@
         app:title="@string/settings_about"
         app:summary="@string/settings_about_summary"/>
 
+    <Preference
+        app:key="pref_privacy_policy"
+        app:title="@string/privacy_policy"
+        app:summary="@string/privacy_policy_summary"/>
+
 </PreferenceScreen>

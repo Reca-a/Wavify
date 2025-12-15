@@ -1,5 +1,6 @@
 package com.example.wavify
 
+import android.app.PendingIntent
 import android.content.Intent
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaSession
@@ -17,6 +18,14 @@ class MusicService : MediaSessionService() {
 
         // Tworzenie MediaSession
         mediaSession = MediaSession.Builder(this, player)
+            .setSessionActivity(
+                PendingIntent.getActivity(
+                    this,
+                    0,
+                    Intent(this, AudioActivity::class.java),
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                )
+            )
             .build()
     }
 

@@ -1,6 +1,5 @@
 package com.example.wavify
 
-import android.content.Context
 import android.os.Bundle
 import android.view.View.GONE
 import androidx.appcompat.app.AlertDialog
@@ -11,7 +10,8 @@ import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.google.android.material.button.MaterialButton
-import androidx.core.content.edit
+import android.content.Intent
+import androidx.core.net.toUri
 
 class SettingsActivity : AppCompatActivity() {
 
@@ -40,13 +40,23 @@ class SettingsActivity : AppCompatActivity() {
             val gesturePref = findPreference<ListPreference>("pref_gesture_control")
             val gestureSens = findPreference<ListPreference>("pref_gesture_sensitivity")
 
-            themePref?.summary = themePref?.entry
-            gesturePref?.summary = gesturePref?.entry
-            gestureSens?.summary = gestureSens?.entry
+            themePref?.let { updateSummary(it) }
+            gesturePref?.let { updateSummary(it) }
+            gestureSens?.let { updateSummary(it) }
 
             // Obsługa kliknięcia w "O aplikacji"
             findPreference<Preference>("pref_about")?.setOnPreferenceClickListener {
                 showAboutDialog()
+                true
+            }
+
+            // Obsługa kliknięcia w "Polityka prywatności"
+            findPreference<Preference>("pref_privacy_policy")?.setOnPreferenceClickListener {
+                val intent = Intent(
+                    Intent.ACTION_VIEW,
+                    "https://reca-a.github.io/Wavify-privacy-policy/".toUri()
+                )
+                startActivity(intent)
                 true
             }
 
@@ -70,9 +80,6 @@ class SettingsActivity : AppCompatActivity() {
 
             // Obsługa kliknięcia w "Czułość gestów"
             gestureSens?.setOnPreferenceChangeListener { preference, newValue ->
-                val prefs = requireContext().getSharedPreferences("settings", Context.MODE_PRIVATE)
-                prefs.edit (commit = true) { putString("pref_gesture_sensitivity", newValue.toString()) }
-
                 val index = gestureSens.findIndexOfValue(newValue.toString())
                 preference.summary = if (index >= 0) gestureSens.entries[index] else null
                 true
@@ -93,6 +100,12 @@ class SettingsActivity : AppCompatActivity() {
                 "light" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
                 "dark" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             }
+        }
+
+        private fun updateSummary(pref: ListPreference) {
+            val index = pref.findIndexOfValue(pref.value)
+            pref.summary =
+                if (index >= 0) pref.entries[index] else null
         }
     }
 }

@@ -21,6 +21,8 @@
     <string name="settings_gestures">Sterowanie gestami</string>
     <string name="settings_about">O aplikacji</string>
     <string name="settings_about_summary">Informacje o Wavify</string>
+    <string name="privacy_policy">Polityka prywatności</string>
+    <string name="privacy_policy_summary">Odnośnik do polityki prywatności aplikacji</string>
 
     <string name="system">Systemowy</string>
     <string name="light">Jasny</string>
@@ -34,7 +36,9 @@
     <string name="medium">Średnia</string>
     <string name="high">Wysoka</string>
 
+    <!--  Informacje o aplikacji  -->
     <string name="about">O Wavify</string>
     <string name="about_desc">Aplikacja wykonana w ramach zajęć PUM na Uniwersytecie Rzeszowskim.
         \n\nAutor: Adrian Raczek</string>
+
 </resources>
