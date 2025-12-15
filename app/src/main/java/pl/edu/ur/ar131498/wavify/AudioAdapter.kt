@@ -1,11 +1,11 @@
-package com.example.wavify
+package pl.edu.ur.ar131498.wavify
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import coil.request.CachePolicy
-import com.example.wavify.databinding.ItemAudioBinding
+import pl.edu.ur.ar131498.wavify.databinding.ItemAudioBinding
 
 // Klasa tworząca listę utworów
 class AudioAdapter(

@@ -1,4 +1,4 @@
-package com.example.wavify
+package pl.edu.ur.ar131498.wavify
 
 import android.Manifest
 import android.app.ActivityOptions
@@ -16,7 +16,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.WindowCompat
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.wavify.databinding.ActivityMainBinding
+import pl.edu.ur.ar131498.wavify.databinding.ActivityMainBinding
 import com.google.android.material.button.MaterialButton
 
 class MainActivity : AppCompatActivity() {

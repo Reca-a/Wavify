@@ -19,7 +19,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Wavify">
         <activity
-            android:name=".MainActivity"
+            android:name="pl.edu.ur.ar131498.wavify.MainActivity"
             android:exported="true"
             android:screenOrientation="portrait"
             tools:ignore="DiscouragedApi,LockedOrientationActivity">
@@ -30,17 +30,17 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".AudioActivity"
+            android:name="pl.edu.ur.ar131498.wavify.AudioActivity"
             android:screenOrientation="portrait"
             android:launchMode="singleTop"
             tools:ignore="DiscouragedApi,LockedOrientationActivity"/>
         <activity
-            android:name=".SettingsActivity"
+            android:name="pl.edu.ur.ar131498.wavify.SettingsActivity"
             android:screenOrientation="portrait"
             tools:ignore="DiscouragedApi,LockedOrientationActivity"/>
 
         <service
-            android:name=".MusicService"
+            android:name="pl.edu.ur.ar131498.wavify.MusicService"
             android:foregroundServiceType="mediaPlayback"
             android:exported="true">
             <intent-filter>

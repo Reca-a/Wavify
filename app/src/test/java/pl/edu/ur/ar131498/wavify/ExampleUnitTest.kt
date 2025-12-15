@@ -1,4 +1,4 @@
-package com.example.wavify
+package pl.edu.ur.ar131498.wavify
 
 import org.junit.Test
 

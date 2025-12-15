@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.wavify"
+    namespace = "pl.edu.ur.ar131498.wavify"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.wavify"
+        applicationId = "pl.edu.ur.ar131498.wavify"
         minSdk = 31
         targetSdk = 35
         versionCode = 1

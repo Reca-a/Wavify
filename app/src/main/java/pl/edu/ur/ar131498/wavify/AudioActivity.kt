@@ -1,4 +1,4 @@
-package com.example.wavify
+package pl.edu.ur.ar131498.wavify
 
 import android.annotation.SuppressLint
 import android.content.ComponentName
@@ -10,7 +10,7 @@ import android.os.Handler
 import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
-import com.example.wavify.databinding.ActivityAudioBinding
+import pl.edu.ur.ar131498.wavify.databinding.ActivityAudioBinding
 import androidx.media3.common.MediaItem
 import androidx.core.view.WindowCompat
 import androidx.media3.common.Player
@@ -137,7 +137,7 @@ class AudioActivity : AppCompatActivity() {
                             if (!song.artist.isNullOrEmpty() && song.artist != "<unknown>")
                                 song.artist
                             else
-                                R.string.unknown_artist.toString()
+                                getString(R.string.unknown_artist)
                         )
                         .setArtworkUri(
                             song.albumArtUri ?: "@drawable/default_album_art.jpg".toUri()
@@ -283,11 +283,15 @@ class AudioActivity : AppCompatActivity() {
 
         repeatMode = when (repeatMode) {
             Player.REPEAT_MODE_OFF -> {
-                binding.repeatButton.icon = AppCompatResources.getDrawable(this, R.drawable.ic_repeat_one_32)
+                binding.repeatButton.icon = AppCompatResources.getDrawable(this,
+                    R.drawable.ic_repeat_one_32
+                )
                 Player.REPEAT_MODE_ONE
             }
             Player.REPEAT_MODE_ONE -> {
-                binding.repeatButton.icon = AppCompatResources.getDrawable(this, R.drawable.ic_repeat_32)
+                binding.repeatButton.icon = AppCompatResources.getDrawable(this,
+                    R.drawable.ic_repeat_32
+                )
                 Player.REPEAT_MODE_ALL
             }
             else -> {
