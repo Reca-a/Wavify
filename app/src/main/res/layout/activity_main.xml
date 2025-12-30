@@ -8,7 +8,7 @@
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         app:cardBackgroundColor="@android:color/transparent">
 
         <LinearLayout
@@ -25,7 +25,10 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"/>
 
-            <include layout="@layout/component_bottom_player"/>
+            <include
+                android:id="@+id/bottomPlayer"
+                layout="@layout/component_bottom_player"
+                android:visibility="gone"/>
 
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>

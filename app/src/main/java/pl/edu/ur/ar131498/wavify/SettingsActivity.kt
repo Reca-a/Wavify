@@ -1,5 +1,6 @@
 package pl.edu.ur.ar131498.wavify
 
+import android.Manifest
 import android.os.Bundle
 import android.view.View.GONE
 import androidx.appcompat.app.AlertDialog
@@ -11,14 +12,26 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.google.android.material.button.MaterialButton
 import android.content.Intent
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.core.net.toUri
 
 class SettingsActivity : AppCompatActivity() {
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
+
+        // Prośba o uprawnienia
+        requestPermissions(
+            arrayOf(
+                Manifest.permission.POST_NOTIFICATIONS,
+                Manifest.permission.CAMERA,
+                Manifest.permission.READ_MEDIA_AUDIO),
+            100
+        )
 
         setContentView(R.layout.activity_settings)
         if (savedInstanceState == null) {

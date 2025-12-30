@@ -2,6 +2,7 @@ package pl.edu.ur.ar131498.wavify
 
 import android.Manifest
 import android.app.ActivityOptions
+import android.content.ComponentName
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -13,16 +14,23 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
+import androidx.media3.session.MediaController
+import androidx.media3.session.SessionToken
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import pl.edu.ur.ar131498.wavify.databinding.ActivityMainBinding
 import com.google.android.material.button.MaterialButton
+import android.view.View
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private var songs: List<AudioFile> = emptyList()
+    private var mediaController: MediaController? = null
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,7 +46,9 @@ class MainActivity : AppCompatActivity() {
 
         // Prośba o uprawnienia
         requestPermissions(
-            arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+            arrayOf(Manifest.permission.POST_NOTIFICATIONS,
+                    Manifest.permission.CAMERA,
+                    Manifest.permission.READ_MEDIA_AUDIO),
             100
         )
 
@@ -49,6 +59,10 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        findViewById<MaterialButton>(R.id.settingsButton).setOnClickListener {
+            startActivity(Intent(this, SettingsActivity::class.java))
+        }
 
         // Pobranie utworów
         songs = MusicRepository.getLocalAudioFiles(this)
@@ -73,10 +87,94 @@ class MainActivity : AppCompatActivity() {
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
         binding.recyclerView.adapter = adapter
 
-        findViewById<MaterialButton>(R.id.settingsButton).setOnClickListener {
-            startActivity(Intent(this, SettingsActivity::class.java))
+        binding.bottomPlayer.root.setOnClickListener {
+            startActivity(
+                Intent(this, AudioActivity::class.java).apply {
+                    flags =
+                        Intent.FLAG_ACTIVITY_SINGLE_TOP or
+                                Intent.FLAG_ACTIVITY_CLEAR_TOP
+                }
+            )
+        }
+
+        binding.bottomPlayer.playPauseButton.setOnClickListener {
+            mediaController?.let {
+                if (it.isPlaying) it.pause() else it.play()
+            }
         }
     }
+
+    override fun onStart() {
+        super.onStart()
+
+        val sessionToken = SessionToken(
+            this,
+            ComponentName(this, MusicService::class.java)
+        )
+
+        val controllerFuture =
+            MediaController.Builder(this, sessionToken).buildAsync()
+
+        controllerFuture.addListener({
+            mediaController = controllerFuture.get()
+            connectBottomPlayer()
+        }, ContextCompat.getMainExecutor(this))
+    }
+
+    override fun onStop() {
+        mediaController?.release()
+        mediaController = null
+        super.onStop()
+    }
+
+    private fun connectBottomPlayer() {
+        val controller = mediaController ?: return
+
+        controller.addListener(object : Player.Listener {
+
+            override fun onPlaybackStateChanged(state: Int) {
+                updateBottomPlayer()
+            }
+
+            override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+                updateBottomPlayer()
+            }
+
+            override fun onIsPlayingChanged(isPlaying: Boolean) {
+                updateBottomPlayer()
+            }
+        })
+
+        updateBottomPlayer()
+    }
+
+    private fun updateBottomPlayer() {
+        val controller = mediaController ?: return
+
+        val hasMedia = controller.mediaItemCount > 0
+
+        binding.bottomPlayer.root.visibility =
+            if (hasMedia) View.VISIBLE else View.GONE
+
+        if (!hasMedia) return
+
+        val mediaItem = controller.currentMediaItem ?: return
+        val metadata = mediaItem.mediaMetadata
+
+        binding.bottomPlayer.songTitleBottom.text =
+            metadata.title ?: getString(R.string.unknown_title)
+
+        binding.bottomPlayer.songArtistText.text =
+            metadata.artist ?: getString(R.string.unknown_artist)
+
+        binding.bottomPlayer.playPauseButton.setIconResource(
+            if (controller.isPlaying)
+                R.drawable.ic_pause_32
+            else
+                R.drawable.ic_play_32
+        )
+    }
+
 
     private fun applyTheme(theme: String) {
         when (theme) {

@@ -21,11 +21,20 @@
     <!-- Czułość gestów -->
     <ListPreference
         app:key="pref_gesture_sensitivity"
-        app:title="Czułość gestów"
+        app:title="@string/settings_gestures_sens"
         app:summary="@string/medium"
         app:entries="@array/gesture_sensitivity_names"
         app:entryValues="@array/gesture_sensitivity_values"
         app:defaultValue="medium" />
+
+    <!-- Kierunek sterowania gestami telefonem -->
+    <ListPreference
+        app:key="pref_gesture_reversed"
+        app:title="@string/settings_gestures_reversed"
+        app:summary="@string/normal"
+        app:entries="@array/gesture_reversed_names"
+        app:entryValues="@array/gesture_reversed_values"
+        app:defaultValue="normal" />
 
     <!-- O aplikacji -->
     <Preference

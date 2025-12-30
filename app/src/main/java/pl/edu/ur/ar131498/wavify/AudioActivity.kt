@@ -1,13 +1,17 @@
 package pl.edu.ur.ar131498.wavify
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.ColorStateList
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import androidx.annotation.OptIn
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import pl.edu.ur.ar131498.wavify.databinding.ActivityAudioBinding
@@ -17,8 +21,11 @@ import androidx.media3.common.Player
 import coil.load
 import com.google.android.material.slider.Slider
 import androidx.core.net.toUri
+import androidx.media3.common.util.Log
+import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
+import androidx.preference.PreferenceManager
 import com.google.android.material.button.MaterialButton
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
@@ -27,26 +34,36 @@ class AudioActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAudioBinding
     private lateinit var controller: MediaController
     private lateinit var controllerFuture: ListenableFuture<MediaController>
-    private var songs: List<AudioFile> = emptyList()
+    private var items: List<MediaItem> = emptyList()
     private val handler = Handler(Looper.getMainLooper())
     private var startIndex: Int = 0
     private var isUserSeeking = false
     private var isShuffleEnabled = false
     private var repeatMode = Player.REPEAT_MODE_OFF
-    private lateinit var gestureController: GestureMotionController
+    private lateinit var gestureController: GestureController
     private lateinit var prefs: SharedPreferences
     private lateinit var preferenceListener: SharedPreferences.OnSharedPreferenceChangeListener
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
+        // Prośba o uprawnienia
+        requestPermissions(
+            arrayOf(
+                Manifest.permission.POST_NOTIFICATIONS,
+                Manifest.permission.CAMERA,
+                Manifest.permission.READ_MEDIA_AUDIO),
+            100
+        )
+
         binding = ActivityAudioBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         // Odczyt zapisanych ustawień
-        prefs = getSharedPreferences("settings", MODE_PRIVATE)
+        prefs = PreferenceManager.getDefaultSharedPreferences(this)
 
         // Odczyt danych z intent
         val uriStrings = intent.getStringArrayListExtra("SONG_URIS") ?: arrayListOf()
@@ -56,7 +73,7 @@ class AudioActivity : AppCompatActivity() {
         startIndex = intent.getIntExtra("START_INDEX", 0)
 
         // Rekonstrukcja obiektów AudioFile
-        songs = uriStrings.indices.map { i ->
+        val songs = uriStrings.indices.map { i ->
             AudioFile(
                 uri = uriStrings[i].toUri(),
                 title = titles.getOrNull(i) ?: getString(R.string.unknown_title),
@@ -66,68 +83,8 @@ class AudioActivity : AppCompatActivity() {
                 }
             )
         }
-
-        // Gesty machania telefonem
-        gestureController = GestureMotionController(
-            context = this,
-            onNext = { nextSong() },
-            onPrevious = { previousSong() },
-            onPlayPause = { playPause() }
-        )
-
-        // Uruchomienie serwisu
-        val serviceIntent = Intent(this, MusicService::class.java)
-        startService(serviceIntent)
-
-        // Połączenie z MediaController
-        val sessionToken = SessionToken(
-            this,
-            ComponentName(this, MusicService::class.java)
-        )
-
-        controllerFuture = MediaController.Builder(this, sessionToken).buildAsync()
-        controllerFuture.addListener({
-            try {
-                controller = controllerFuture.get()
-                initializePlayer()
-                gestureController.start()
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }, MoreExecutors.directExecutor())
-
-        setupTimeBar()
-        startProgressUpdate()
-
-        // Aktualizowanie ustawień gestów
-        preferenceListener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
-            if (key == "pref_gesture_sensitivity") {
-                val newValue = prefs.getString("pref_gesture_sensitivity", "medium")!!
-                gestureController.updateSensitivity(newValue)
-            }
-//  TODO zaimplementować gesty kamery
-//            if (key == "pref_gesture_control") {
-//                val newValue = prefs.getString("pref_gesture_control", "none")!!
-//                gestureController.updateGestureMode(newValue)
-//            }
-        }
-        prefs.registerOnSharedPreferenceChangeListener(preferenceListener)
-
-        // Opóźnione przewijanie długiego tytułu utworu
-        binding.songTitleText.postDelayed({
-            binding.songTitleText.isSelected = true
-        }, 3000)
-
-        findViewById<MaterialButton>(R.id.settingsButton).setOnClickListener {
-            startActivity(Intent(this, SettingsActivity::class.java))
-        }
-
-
-    }
-
-    private fun initializePlayer() {
         // Tworzenie listy utworów
-        val items = songs.map { song ->
+        items = songs.map { song ->
             MediaItem.Builder()
                 .setUri(song.uri)
                 .setMediaMetadata(
@@ -147,10 +104,72 @@ class AudioActivity : AppCompatActivity() {
                 .build()
         }
 
-        controller.setMediaItems(items, startIndex, 0)
-        controller.prepare()
-        controller.play()
+        // Obsługa gestów
+        val hand = HandGestureController(
+            context = this,
+            lifecycleOwner = this
+        ) { action ->
+            handleGestureAction(action)
+        }
+        val motion = MotionGestureController(this) { action ->
+            handleGestureAction(action)
+        }
+        gestureController = GestureController(motion, hand)
 
+        // Uruchomienie serwisu
+        val serviceIntent = Intent(this, MusicService::class.java)
+        startService(serviceIntent)
+
+        // Połączenie z MediaController
+        val sessionToken = SessionToken(
+            this,
+            ComponentName(this, MusicService::class.java)
+        )
+
+        controllerFuture = MediaController.Builder(this, sessionToken).buildAsync()
+        controllerFuture.addListener({
+            try {
+                controller = controllerFuture.get()
+                if (controller.mediaItemCount == 0 && songs.isNotEmpty()) {
+                    controller.setMediaItems(items, startIndex, 0)
+                    controller.prepare()
+                    controller.play()
+                }
+
+                initializePlayer()
+                applyGestureSettings()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }, MoreExecutors.directExecutor())
+
+        setupTimeBar()
+        startProgressUpdate()
+
+        // Aktualizowanie ustawień gestów
+        preferenceListener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+            if (key == "pref_gesture_control") {
+                applyGestureSettings()
+            }
+
+//            if (key == "pref_gesture_sensitivity") {
+//                val newValue = prefs.getString("pref_gesture_sensitivity", "medium")!!
+//                gestureController.updateSensitivity(newValue)
+//            }
+        }
+        prefs.registerOnSharedPreferenceChangeListener(preferenceListener)
+
+        // Opóźnione przewijanie długiego tytułu utworu
+        binding.songTitleText.postDelayed({
+            binding.songTitleText.isSelected = true
+        }, 3000)
+
+        findViewById<MaterialButton>(R.id.settingsButton).setOnClickListener {
+            startActivity(Intent(this, SettingsActivity::class.java))
+        }
+    }
+
+    private fun initializePlayer() {
         // Listenery przycisków odtwarzacza
         binding.playPauseButton.setOnClickListener { playPause() }
         binding.nextButton.setOnClickListener { nextSong() }
@@ -158,15 +177,11 @@ class AudioActivity : AppCompatActivity() {
         binding.shuffleButton.setOnClickListener { toggleShuffle() }
         binding.repeatButton.setOnClickListener { toggleRepeat() }
 
-        // Ustawienie początkowych danych
-        updateSongInfo(startIndex)
-
         // Listener dla odtwarzacza
         controller.addListener(object : Player.Listener {
             // Zmiana utworu
             override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
-                val index = controller.currentMediaItemIndex
-                updateSongInfo(index)
+                refreshFromController()
             }
 
             // Pauza / odtworzenie
@@ -177,24 +192,33 @@ class AudioActivity : AppCompatActivity() {
                 )
             }
         })
+
+        refreshFromController()
     }
 
-    // Funkcja do aktualizacji informacji o utworze
-    private fun updateSongInfo(index: Int) {
-        if (index in songs.indices) {
-            val song = songs[index]
-            binding.songTitleText.text = song.title
-            if (!song.artist.isNullOrEmpty() && song.artist != "<unknown>") {
-                binding.songArtistText.text = song.artist
-            } else {
-                binding.songArtistText.text = getString(R.string.unknown_artist)
-            }
+    private fun refreshFromController() {
+        val mediaItem = controller.currentMediaItem ?: return
+        val metadata = mediaItem.mediaMetadata
 
-            binding.albumArtImageView.load(song.albumArtUri) {
-                placeholder(R.drawable.default_album_art)
-                error(R.drawable.default_album_art)
-                crossfade(true)
-            }
+        binding.songTitleText.text =
+            metadata.title?.toString() ?: getString(R.string.unknown_title)
+
+        binding.songArtistText.text =
+            metadata.artist?.toString() ?: getString(R.string.unknown_artist)
+
+        binding.albumArtImageView.load(metadata.artworkUri) {
+            placeholder(R.drawable.default_album_art)
+            error(R.drawable.default_album_art)
+        }
+    }
+
+    private fun handleGestureAction(action: GestureAction) {
+        when (action) {
+            GestureAction.NEXT -> nextSong()
+            GestureAction.PREVIOUS -> previousSong()
+            GestureAction.PLAY_PAUSE -> playPause()
+            GestureAction.PLAY -> controller.play()
+            GestureAction.PAUSE -> controller.pause()
         }
     }
 
@@ -316,6 +340,16 @@ class AudioActivity : AppCompatActivity() {
         return typedValue.data
     }
 
+    private fun applyGestureSettings() {
+        val gestureMode = prefs.getString("pref_gesture_control", "none")
+
+        when (gestureMode) {
+            "shake" -> gestureController.enableMotion()
+            "hand" -> gestureController.enableHand()
+            "none" -> gestureController.disableAll()
+        }
+    }
+
     // Funkcja pomocnicza do formatowania wyświetlanego czasu
     @SuppressLint("DefaultLocale")
     private fun formatTime(millis: Long): String {
@@ -325,11 +359,18 @@ class AudioActivity : AppCompatActivity() {
         return String.format("%d:%02d", minutes, seconds)
     }
 
+    override fun onStart() {
+        super.onStart()
+        if (::controller.isInitialized) {
+            refreshFromController()
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         if (::controllerFuture.isInitialized) {
             MediaController.releaseFuture(controllerFuture)
-            gestureController.stop()
+            gestureController.disableAll()
             prefs.unregisterOnSharedPreferenceChangeListener(preferenceListener)
         }
         handler.removeCallbacksAndMessages(null)

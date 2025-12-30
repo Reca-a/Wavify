@@ -6,7 +6,7 @@
     <string name="song_title">Tytuł utworu</string>
     <string name="song_artist">Artysta</string>
     <string name="album_art">Okładka albumu</string>
-    <string name="no_audio_files">Brak plików audio</string>
+    <string name="no_audio_files">Brak plików audio lub nie przyznano uprawnień</string>
 
     <!-- Opisy przycisków -->
     <string name="settings_button">Ustawienia</string>
@@ -19,6 +19,8 @@
     <!-- Ustawienia -->
     <string name="settings_theme">Tryb motywu</string>
     <string name="settings_gestures">Sterowanie gestami</string>
+    <string name="settings_gestures_sens">Czułość gestów</string>
+    <string name="settings_gestures_reversed">Sterowanie gestami ruchu telefonem</string>
     <string name="settings_about">O aplikacji</string>
     <string name="settings_about_summary">Informacje o Wavify</string>
     <string name="privacy_policy">Polityka prywatności</string>
@@ -35,6 +37,9 @@
     <string name="low">Niska</string>
     <string name="medium">Średnia</string>
     <string name="high">Wysoka</string>
+
+    <string name="normal">Normalne</string>
+    <string name="reversed">Odwrócone</string>
 
     <!--  Informacje o aplikacji  -->
     <string name="about">O Wavify</string>

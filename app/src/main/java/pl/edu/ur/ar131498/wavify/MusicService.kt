@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
+import androidx.media3.common.MediaItem
 
 class MusicService : MediaSessionService() {
     private var mediaSession: MediaSession? = null
@@ -22,11 +23,23 @@ class MusicService : MediaSessionService() {
                 PendingIntent.getActivity(
                     this,
                     0,
-                    Intent(this, AudioActivity::class.java),
+                    Intent(this, AudioActivity::class.java).apply {
+                        flags =
+                            Intent.FLAG_ACTIVITY_SINGLE_TOP or
+                                    Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    },
                     PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
                 )
             )
             .build()
+    }
+
+    fun setPlaylist(items: List<MediaItem>, startIndex: Int) {
+        mediaSession?.player?.apply {
+            setMediaItems(items, startIndex, 0)
+            prepare()
+            play()
+        }
     }
 
     override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaSession? {
@@ -34,10 +47,11 @@ class MusicService : MediaSessionService() {
     }
 
     override fun onTaskRemoved(rootIntent: Intent?) {
-        val player = mediaSession?.player
-        if (player?.playWhenReady == false) {
-            stopSelf()
+        mediaSession?.player?.run {
+            stop()
+            clearMediaItems()
         }
+        stopSelf()
     }
 
     override fun onDestroy() {

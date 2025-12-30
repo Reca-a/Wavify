@@ -37,4 +37,15 @@
         <item>medium</item>
         <item>high</item>
     </string-array>
+
+    <!-- Sterowanie gestami ruchu telefonem -->
+    <string-array name="gesture_reversed_names">
+        <item>Normalne</item>
+        <item>Odwrócone</item>
+    </string-array>
+
+    <string-array name="gesture_reversed_values">
+        <item>normal</item>
+        <item>reversed</item>
+    </string-array>
 </resources>
