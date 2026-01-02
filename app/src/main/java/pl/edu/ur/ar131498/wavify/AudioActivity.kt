@@ -1,19 +1,15 @@
 package pl.edu.ur.ar131498.wavify
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.ColorStateList
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import androidx.annotation.OptIn
-import androidx.annotation.RequiresApi
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.content.res.AppCompatResources
 import pl.edu.ur.ar131498.wavify.databinding.ActivityAudioBinding
 import androidx.media3.common.MediaItem
 import androidx.core.view.WindowCompat
@@ -21,8 +17,6 @@ import androidx.media3.common.Player
 import coil.load
 import com.google.android.material.slider.Slider
 import androidx.core.net.toUri
-import androidx.media3.common.util.Log
-import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import androidx.preference.PreferenceManager
@@ -43,21 +37,19 @@ class AudioActivity : AppCompatActivity() {
     private lateinit var gestureController: GestureController
     private lateinit var prefs: SharedPreferences
     private lateinit var preferenceListener: SharedPreferences.OnSharedPreferenceChangeListener
+    private val dimHandler = Handler(Looper.getMainLooper())
+    private var originalBrightness = -1f
+    private var isHandGesture = false
+    private val dimRunnable = Runnable {
+        if (isHandGesture) {
+            dimScreen()
+        }
+    }
 
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
-
-        // Prośba o uprawnienia
-        requestPermissions(
-            arrayOf(
-                Manifest.permission.POST_NOTIFICATIONS,
-                Manifest.permission.CAMERA,
-                Manifest.permission.READ_MEDIA_AUDIO),
-            100
-        )
 
         binding = ActivityAudioBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -130,7 +122,10 @@ class AudioActivity : AppCompatActivity() {
         controllerFuture.addListener({
             try {
                 controller = controllerFuture.get()
-                if (controller.mediaItemCount == 0 && songs.isNotEmpty()) {
+
+                val hasNewPlaylist = intent.hasExtra("SONG_URIS") && songs.isNotEmpty()
+
+                if (hasNewPlaylist) {
                     controller.setMediaItems(items, startIndex, 0)
                     controller.prepare()
                     controller.play()
@@ -152,10 +147,9 @@ class AudioActivity : AppCompatActivity() {
                 applyGestureSettings()
             }
 
-//            if (key == "pref_gesture_sensitivity") {
-//                val newValue = prefs.getString("pref_gesture_sensitivity", "medium")!!
-//                gestureController.updateSensitivity(newValue)
-//            }
+            if (key == "pref_gesture_sensitivity") {
+                gestureController.updateMotionSens()
+            }
         }
         prefs.registerOnSharedPreferenceChangeListener(preferenceListener)
 
@@ -209,6 +203,24 @@ class AudioActivity : AppCompatActivity() {
         binding.albumArtImageView.load(metadata.artworkUri) {
             placeholder(R.drawable.default_album_art)
             error(R.drawable.default_album_art)
+        }
+
+        if (controller.isPlaying)
+            binding.playPauseButton.setIconResource(R.drawable.ic_pause_32)
+        else
+            binding.playPauseButton.setIconResource(R.drawable.ic_play_32)
+
+        if (controller.shuffleModeEnabled) {
+            isShuffleEnabled = true
+            binding.shuffleButton.iconTint = ColorStateList.valueOf(
+                getThemeColor(com.google.android.material.R.attr.colorOnSecondary)
+            )
+        }
+        if (controller.repeatMode == Player.REPEAT_MODE_ONE) {
+            repeatMode = Player.REPEAT_MODE_ONE
+            binding.repeatButton.iconTint = ColorStateList.valueOf(
+                getThemeColor(com.google.android.material.R.attr.colorOnSecondary)
+            )
         }
     }
 
@@ -305,22 +317,10 @@ class AudioActivity : AppCompatActivity() {
     private fun toggleRepeat() {
         if (!::controller.isInitialized) return
 
-        repeatMode = when (repeatMode) {
-            Player.REPEAT_MODE_OFF -> {
-                binding.repeatButton.icon = AppCompatResources.getDrawable(this,
-                    R.drawable.ic_repeat_one_32
-                )
-                Player.REPEAT_MODE_ONE
-            }
-            Player.REPEAT_MODE_ONE -> {
-                binding.repeatButton.icon = AppCompatResources.getDrawable(this,
-                    R.drawable.ic_repeat_32
-                )
-                Player.REPEAT_MODE_ALL
-            }
-            else -> {
-                Player.REPEAT_MODE_OFF
-            }
+        repeatMode = when (controller.repeatMode) {
+            Player.REPEAT_MODE_OFF -> Player.REPEAT_MODE_ONE
+            Player.REPEAT_MODE_ONE -> Player.REPEAT_MODE_OFF
+            else -> Player.REPEAT_MODE_OFF
         }
 
         binding.repeatButton.iconTint = ColorStateList.valueOf(
@@ -343,10 +343,56 @@ class AudioActivity : AppCompatActivity() {
     private fun applyGestureSettings() {
         val gestureMode = prefs.getString("pref_gesture_control", "none")
 
+        if (gestureMode == "hand") {
+            isHandGesture = true
+            originalBrightness = window.attributes.screenBrightness
+            window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            resetDimTimer()
+        } else{
+            isHandGesture = false
+            window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            restoreBrightness()
+            dimHandler.removeCallbacks(dimRunnable)
+        }
+
         when (gestureMode) {
             "shake" -> gestureController.enableMotion()
             "hand" -> gestureController.enableHand()
             "none" -> gestureController.disableAll()
+        }
+    }
+
+    private fun dimScreen() {
+        val layoutParams = window.attributes
+        layoutParams.screenBrightness = 0.01f
+        window.attributes = layoutParams
+    }
+
+    private fun restoreBrightness() {
+        val layoutParams = window.attributes
+        layoutParams.screenBrightness = if (originalBrightness >= 0) {
+            originalBrightness
+        } else {
+            WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE // -1f = systemowa jasność
+        }
+        window.attributes = layoutParams
+    }
+
+    fun resetDimTimer() {
+        // Przywróć pełną jasność
+        restoreBrightness()
+
+        // Resetuj timer
+        dimHandler.removeCallbacks(dimRunnable)
+        if (isHandGesture) {
+            dimHandler.postDelayed(dimRunnable, 10000) // 10 sekund
+        }
+    }
+
+    override fun onUserInteraction() {
+        super.onUserInteraction()
+        if (isHandGesture) {
+            resetDimTimer()
         }
     }
 
@@ -373,6 +419,11 @@ class AudioActivity : AppCompatActivity() {
             gestureController.disableAll()
             prefs.unregisterOnSharedPreferenceChangeListener(preferenceListener)
         }
+
+        window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        restoreBrightness()
+        dimHandler.removeCallbacks(dimRunnable)
+
         handler.removeCallbacksAndMessages(null)
     }
 }

@@ -7,6 +7,8 @@
     <string name="song_artist">Artysta</string>
     <string name="album_art">Okładka albumu</string>
     <string name="no_audio_files">Brak plików audio lub nie przyznano uprawnień</string>
+    <string name="no_files_big">Pliki audio nie znalezione</string>
+    <string name="no_files_desc">Dodaj utwory na swoje urządzenie lub zezwól na uprawnienia</string>
 
     <!-- Opisy przycisków -->
     <string name="settings_button">Ustawienia</string>
@@ -16,11 +18,45 @@
     <string name="next_button">Następny</string>
     <string name="repeat_button">Powtarzaj utwór</string>
 
+    <!-- Poradnik gestów -->
+    <string name="gesture_help_title">Sterowanie gestami</string>
+    <string name="gesture_help_summary">Dowiedz się jak sterować odtwarzaniem za pomocą gestów</string>
+
+    <string name="gesture_motion_title">Gesty ruchem telefonu</string>
+    <string name="gesture_motion_desc">
+        Poruszaj telefonem, aby sterować odtwarzaniem bez dotykania ekranu:\n
+        • Ruch w prawo – następny utwór\n
+        • Ruch w lewo – poprzedni utwór\n
+        • Ruch w dół – odtwarzanie / pauza
+    </string>
+
+    <string name="gesture_hand_title">Gesty ręką</string>
+    <string name="gesture_hand_desc">
+        Steruj muzyką za pomocą dłoni przed przednią kamerą:\n
+        • Otwarta dłoń (5 palców) – pauza\n
+        • Zaciśnięta pięść (0 palców) – odtwarzanie\n
+        • Jeden palec (wskazujący) – następny utwór\n
+        • Trzy palce (wskazujący, środkowy, serdeczny) – poprzedni utwór
+    </string>
+
+    <string name="gesture_tips">
+        Wskazówki:\n
+        • Gesty muszą być włączone w ustawieniach\n
+        • Kamera nie nagrywa ani nie zapisuje obrazu\n
+        • Dobre oświetlenie poprawia rozpoznawanie gestów
+        • Gesty ręką działają tylko przy włączonym ekranie w odtwarzaczu
+    </string>
+
+
     <!-- Ustawienia -->
+    <string name="settings_appearance">Wygląd</string>
+    <string name="settings_controls">Sterowanie</string>
+    <string name="settings_info">Informacje</string>
+
     <string name="settings_theme">Tryb motywu</string>
-    <string name="settings_gestures">Sterowanie gestami</string>
+    <string name="settings_gestures">Tryb gestów</string>
     <string name="settings_gestures_sens">Czułość gestów</string>
-    <string name="settings_gestures_reversed">Sterowanie gestami ruchu telefonem</string>
+    <string name="settings_gestures_reversed">Kierunek gestów</string>
     <string name="settings_about">O aplikacji</string>
     <string name="settings_about_summary">Informacje o Wavify</string>
     <string name="privacy_policy">Polityka prywatności</string>

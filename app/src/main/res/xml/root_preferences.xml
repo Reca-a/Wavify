@@ -1,50 +1,66 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <!-- Tryb motywu -->
-    <ListPreference
-        app:key="pref_theme_mode"
-        app:title="@string/settings_theme"
-        app:summary="@string/system"
-        app:entries="@array/theme_mode_names"
-        app:entryValues="@array/theme_mode_values"
-        app:defaultValue="system"/>
+    <!-- WYGLĄD -->
+    <PreferenceCategory
+        app:title="@string/settings_appearance">
 
-    <!-- Gesty do sterowania odtwarzaczem -->
-    <ListPreference
-        app:key="pref_gesture_control"
-        app:title="@string/settings_gestures"
-        app:summary="@string/none"
-        app:entries="@array/gesture_control_names"
-        app:entryValues="@array/gesture_control_values"
-        app:defaultValue="none"/>
+        <ListPreference
+            app:key="pref_theme_mode"
+            app:title="@string/settings_theme"
+            app:entries="@array/theme_mode_names"
+            app:entryValues="@array/theme_mode_values"
+            app:defaultValue="system" />
 
-    <!-- Czułość gestów -->
-    <ListPreference
-        app:key="pref_gesture_sensitivity"
-        app:title="@string/settings_gestures_sens"
-        app:summary="@string/medium"
-        app:entries="@array/gesture_sensitivity_names"
-        app:entryValues="@array/gesture_sensitivity_values"
-        app:defaultValue="medium" />
+    </PreferenceCategory>
 
-    <!-- Kierunek sterowania gestami telefonem -->
-    <ListPreference
-        app:key="pref_gesture_reversed"
-        app:title="@string/settings_gestures_reversed"
-        app:summary="@string/normal"
-        app:entries="@array/gesture_reversed_names"
-        app:entryValues="@array/gesture_reversed_values"
-        app:defaultValue="normal" />
+    <!-- STEROWANIE -->
+    <PreferenceCategory
+        app:title="@string/settings_controls">
 
-    <!-- O aplikacji -->
-    <Preference
-        app:key="pref_about"
-        app:title="@string/settings_about"
-        app:summary="@string/settings_about_summary"/>
+        <ListPreference
+            app:key="pref_gesture_control"
+            app:title="@string/settings_gestures"
+            app:entries="@array/gesture_control_names"
+            app:entryValues="@array/gesture_control_values"
+            app:defaultValue="none"/>
 
-    <Preference
-        app:key="pref_privacy_policy"
-        app:title="@string/privacy_policy"
-        app:summary="@string/privacy_policy_summary"/>
+        <ListPreference
+            app:key="pref_gesture_sensitivity"
+            app:title="@string/settings_gestures_sens"
+            app:entries="@array/gesture_sensitivity_names"
+            app:entryValues="@array/gesture_sensitivity_values"
+            app:defaultValue="medium"
+            app:isPreferenceVisible="false"/>
+
+        <ListPreference
+            app:key="pref_gesture_reversed"
+            app:title="@string/settings_gestures_reversed"
+            app:entries="@array/gesture_reversed_names"
+            app:entryValues="@array/gesture_reversed_values"
+            app:defaultValue="normal"
+            app:isPreferenceVisible="false"/>
+
+        <Preference
+            app:key="pref_gesture_help"
+            app:title="@string/gesture_help_title"
+            app:summary="@string/gesture_help_summary" />
+
+    </PreferenceCategory>
+
+    <!-- INFORMACJE -->
+    <PreferenceCategory
+        app:title="@string/settings_info">
+
+        <Preference
+            app:key="pref_about"
+            app:title="@string/settings_about"
+            app:summary="@string/settings_about_summary"/>
+
+        <Preference
+            app:key="pref_privacy_policy"
+            app:title="@string/privacy_policy"
+            app:summary="@string/privacy_policy_summary"/>
+
+    </PreferenceCategory>
 
 </PreferenceScreen>

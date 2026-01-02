@@ -19,9 +19,10 @@ class MotionGestureController(
     private val cooldownMs = 800L
 
     // Czułość gestów
-    private var sensitivityFactor = 1f
-    private var swipeThreshold = 16f  // X
-    private var dropThreshold = -3f   // Y
+    private val baseSwipeThreshold = 16f
+    private val baseDropThreshold = -3f
+    private var swipeThreshold = baseSwipeThreshold  // X
+    private var dropThreshold = baseDropThreshold   // Y
 
     // Czułość z ustawień
     private val prefs = PreferenceManager.getDefaultSharedPreferences(context)
@@ -33,17 +34,21 @@ class MotionGestureController(
         updateSensitivity(sensitivity)
     }
 
-    fun updateSensitivity(value: String) {
-        sensitivityFactor = when (value) {
-            "low" -> 2f
+    private fun updateSensitivity(value: String) {
+        val sensitivityFactor = when (value) {
+            "low" -> 1.5f
             "medium" -> 1f
-            "high" -> 0.5f
+            "high" -> 0.7f
             else -> 1f
         }
-        swipeThreshold *= sensitivityFactor
-        dropThreshold *= sensitivityFactor
+        swipeThreshold = baseSwipeThreshold * sensitivityFactor
+        dropThreshold = baseDropThreshold * sensitivityFactor
     }
 
+    fun refreshFromPreferences() {
+        val value = prefs.getString("pref_gesture_sensitivity", "medium")!!
+        updateSensitivity(value)
+    }
 
     fun start() {
         sensorManager.registerListener(this, accel, SensorManager.SENSOR_DELAY_GAME)

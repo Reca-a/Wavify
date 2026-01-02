@@ -26,4 +26,8 @@ class GestureController(
         motion.stop()
         hand.stop()
     }
+
+    fun updateMotionSens() {
+        motion.refreshFromPreferences()
+    }
 }

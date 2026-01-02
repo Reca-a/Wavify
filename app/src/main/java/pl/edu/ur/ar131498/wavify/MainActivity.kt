@@ -1,7 +1,6 @@
 package pl.edu.ur.ar131498.wavify
 
 import android.Manifest
-import android.app.ActivityOptions
 import android.content.ComponentName
 import android.content.Intent
 import android.os.Build
@@ -10,8 +9,6 @@ import android.transition.Fade
 import android.transition.Slide
 import android.view.Gravity
 import android.view.Window
-import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
@@ -25,14 +22,34 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import pl.edu.ur.ar131498.wavify.databinding.ActivityMainBinding
 import com.google.android.material.button.MaterialButton
 import android.view.View
+import androidx.activity.result.contract.ActivityResultContracts
+import coil.load
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private var songs: List<AudioFile> = emptyList()
     private var mediaController: MediaController? = null
+    private lateinit var adapter : AudioAdapter
 
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    private val permissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestMultiplePermissions()
+        ) { permissions ->
+            val audioGranted =
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    permissions[Manifest.permission.READ_MEDIA_AUDIO] == true
+                } else {
+                    permissions[Manifest.permission.READ_EXTERNAL_STORAGE] == true
+                }
+
+            if (audioGranted) {
+                reloadSongs()
+            } else {
+                showEmptyState()
+            }
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -45,12 +62,17 @@ class MainActivity : AppCompatActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         // Prośba o uprawnienia
-        requestPermissions(
-            arrayOf(Manifest.permission.POST_NOTIFICATIONS,
-                    Manifest.permission.CAMERA,
-                    Manifest.permission.READ_MEDIA_AUDIO),
-            100
-        )
+        val permissions = buildList {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                add(Manifest.permission.POST_NOTIFICATIONS)
+                add(Manifest.permission.READ_MEDIA_AUDIO)
+            } else {
+                add(Manifest.permission.READ_EXTERNAL_STORAGE)
+            }
+            add(Manifest.permission.CAMERA)
+        }.toTypedArray()
+
+        permissionLauncher.launch(permissions)
 
         // Animacja pojawiania się utworów podczas przewijania
         window.requestFeature(Window.FEATURE_CONTENT_TRANSITIONS)
@@ -68,24 +90,19 @@ class MainActivity : AppCompatActivity() {
         songs = MusicRepository.getLocalAudioFiles(this)
 
         if (songs.isEmpty()) {
-            Toast.makeText(this, getString(R.string.no_audio_files), Toast.LENGTH_SHORT).show()
-            return
+            showEmptyState()
+        } else {
+            hideEmptyState()
         }
 
         // Wczytanie utworów
-        val adapter = AudioAdapter(songs) { position ->
-            val intent = Intent(this, AudioActivity::class.java).apply {
-                putExtra("START_INDEX", position)
-                putStringArrayListExtra("SONG_URIS", ArrayList(songs.map { it.uri.toString() }))
-                putStringArrayListExtra("SONG_TITLES", ArrayList(songs.map { it.title }))
-                putStringArrayListExtra("SONG_ARTISTS", ArrayList(songs.map { it.artist ?: getString(R.string.unknown_artist) }))
-                putStringArrayListExtra("ALBUM_ART_URIS", ArrayList(songs.map { it.albumArtUri?.toString() ?: "" }))
-            }
-            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+        adapter = AudioAdapter { list, position ->
+            openAudioActivity(list, position)
         }
 
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
         binding.recyclerView.adapter = adapter
+        adapter.submitList(songs)
 
         binding.bottomPlayer.root.setOnClickListener {
             startActivity(
@@ -167,6 +184,11 @@ class MainActivity : AppCompatActivity() {
         binding.bottomPlayer.songArtistText.text =
             metadata.artist ?: getString(R.string.unknown_artist)
 
+        binding.bottomPlayer.albumArtBottom.load(metadata.artworkUri) {
+            placeholder(R.drawable.default_album_art)
+            error(R.drawable.default_album_art)
+        }
+
         binding.bottomPlayer.playPauseButton.setIconResource(
             if (controller.isPlaying)
                 R.drawable.ic_pause_32
@@ -175,6 +197,49 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
+    private fun openAudioActivity(list: List<AudioFile>, position: Int) {
+        val intent = Intent(this, AudioActivity::class.java).apply {
+            putExtra("START_INDEX", position)
+            putStringArrayListExtra(
+                "SONG_URIS",
+                ArrayList(list.map { it.uri.toString() })
+            )
+            putStringArrayListExtra(
+                "SONG_TITLES",
+                ArrayList(list.map { it.title })
+            )
+            putStringArrayListExtra(
+                "SONG_ARTISTS",
+                ArrayList(list.map { it.artist ?: getString(R.string.unknown_artist) })
+            )
+            putStringArrayListExtra(
+                "ALBUM_ART_URIS",
+                ArrayList(list.map { it.albumArtUri?.toString() ?: "" })
+            )
+        }
+        startActivity(intent)
+    }
+
+    private fun reloadSongs() {
+        songs = MusicRepository.getLocalAudioFiles(this)
+
+        if (songs.isEmpty()) {
+            showEmptyState()
+        } else {
+            hideEmptyState()
+            adapter.submitList(songs)
+        }
+    }
+
+    private fun showEmptyState() {
+        binding.recyclerView.visibility = View.GONE
+        binding.emptyState.visibility = View.VISIBLE
+    }
+
+    private fun hideEmptyState() {
+        binding.recyclerView.visibility = View.VISIBLE
+        binding.emptyState.visibility = View.GONE
+    }
 
     private fun applyTheme(theme: String) {
         when (theme) {

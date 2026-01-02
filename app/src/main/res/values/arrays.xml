@@ -2,8 +2,8 @@
     <!-- Wybór trybu motywu -->
     <string-array name="theme_mode_names">
         <item>@string/system</item>
-        <item>Jasny</item>
-        <item>Ciemny</item>
+        <item>@string/light</item>
+        <item>@string/dark</item>
     </string-array>
 
     <string-array name="theme_mode_values">
@@ -27,9 +27,9 @@
 
     <!-- Czułość gestów -->
     <string-array name="gesture_sensitivity_names">
-        <item>Niska</item>
-        <item>Średnia</item>
-        <item>Wysoka</item>
+        <item>@string/low</item>
+        <item>@string/medium</item>
+        <item>@string/high</item>
     </string-array>
 
     <string-array name="gesture_sensitivity_values">
@@ -40,8 +40,8 @@
 
     <!-- Sterowanie gestami ruchu telefonem -->
     <string-array name="gesture_reversed_names">
-        <item>Normalne</item>
-        <item>Odwrócone</item>
+        <item>@string/normal</item>
+        <item>@string/reversed</item>
     </string-array>
 
     <string-array name="gesture_reversed_values">

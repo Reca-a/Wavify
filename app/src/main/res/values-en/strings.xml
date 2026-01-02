@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_logo">Logo</string>
+
+    <string name="unknown_artist">Unknown artist</string>
+    <string name="unknown_title">Unknown title</string>
+
+    <string name="song_title">Song title</string>
+    <string name="song_artist">Artist</string>
+    <string name="album_art">Album artwork</string>
+
+    <string name="no_audio_files">No audio files found or permission not granted</string>
+    <string name="no_files_big">No audio files found</string>
+    <string name="no_files_desc">Add music files to your device or grant the required permissions</string>
+
+    <!-- Button descriptions -->
+    <string name="settings_button">Settings</string>
+    <string name="shuffle_button">Shuffle</string>
+    <string name="prev_button">Previous</string>
+    <string name="play_pause_button">Play or pause</string>
+    <string name="next_button">Next</string>
+    <string name="repeat_button">Repeat track</string>
+
+    <!-- Gesture tutorial -->
+    <string name="gesture_help_title">Gesture controls</string>
+    <string name="gesture_help_summary">Learn how to control playback using gestures</string>
+
+    <string name="gesture_motion_title">Phone motion gestures</string>
+    <string name="gesture_motion_desc">
+        Tilt your phone to control playback without touching the screen:\n
+        • Tilt right – next track\n
+        • Tilt left – previous track\n
+        • Move down – play / pause
+    </string>
+
+    <string name="gesture_hand_title">Hand Gestures</string>
+    <string name="gesture_hand_desc">
+        Control music with your hand in front of the camera:\n
+        • Open palm (5 fingers) – pause\n
+        • Closed fist (0 fingers) – play\n
+        • One finger (index) – next track\n
+        • Three fingers (index, middle, ring) – previous track
+    </string>
+
+    <string name="gesture_tips">
+        Tips:\n
+        • Gestures must be enabled in settings\n
+        • The camera does not record or store any image data\n
+        • Good lighting improves gesture recognition
+        • Hand gestures only work with screen on in the player
+    </string>
+
+    <!-- Settings -->
+    <string name="settings_appearance">Appearance</string>
+    <string name="settings_controls">Controls</string>
+    <string name="settings_info">Info</string>
+
+    <string name="settings_theme">Theme mode</string>
+    <string name="settings_gestures">Gesture mode</string>
+    <string name="settings_gestures_sens">Gesture sensitivity</string>
+    <string name="settings_gestures_reversed">Gesture direction</string>
+    <string name="settings_about">About</string>
+    <string name="settings_about_summary">Information about Wavify</string>
+    <string name="privacy_policy">Privacy policy</string>
+    <string name="privacy_policy_summary">Link to the app privacy policy</string>
+
+    <string name="system">System</string>
+    <string name="light">Light</string>
+    <string name="dark">Dark</string>
+
+    <string name="none">None</string>
+    <string name="shake">Phone motion</string>
+    <string name="hand">Hand gestures in front of the camera</string>
+
+    <string name="low">Low</string>
+    <string name="medium">Medium</string>
+    <string name="high">High</string>
+
+    <string name="normal">Normal</string>
+    <string name="reversed">Reversed</string>
+
+    <!-- About -->
+    <string name="about">About Wavify</string>
+    <string name="about_desc">
+        An application developed as part of the PUM course at the University of Rzeszów.
+        \n\nAuthor: Adrian Raczek
+    </string>
+</resources>

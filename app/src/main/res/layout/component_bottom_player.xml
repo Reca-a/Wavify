@@ -60,7 +60,7 @@
         app:iconTint="?attr/colorOnPrimaryContainer"
         app:iconGravity="textEnd"
         android:layout_gravity="center_vertical"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="24dp"
         android:layout_marginBottom="8dp"
         app:icon="@drawable/ic_pause_32"
         app:iconSize="32dp"

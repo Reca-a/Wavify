@@ -9,10 +9,17 @@ import pl.edu.ur.ar131498.wavify.databinding.ItemAudioBinding
 
 // Klasa tworząca listę utworów
 class AudioAdapter(
-    private val songs: List<AudioFile>,
-    private val onItemClick: (Int) -> Unit
+    private val onItemClick: (List<AudioFile>, Int) -> Unit
 ) : RecyclerView.Adapter<AudioAdapter.AudioViewHolder>() {
-    inner class AudioViewHolder(val binding: ItemAudioBinding) :
+
+    private var songs: List<AudioFile> = emptyList()
+
+    fun submitList(newSongs: List<AudioFile>) {
+        songs = newSongs
+        notifyDataSetChanged()
+    }
+
+    inner class AudioViewHolder(private val binding: ItemAudioBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(song: AudioFile, position: Int) {
             binding.titleText.text = song.title
@@ -24,7 +31,7 @@ class AudioAdapter(
                 memoryCachePolicy(CachePolicy.ENABLED)
                 diskCachePolicy(CachePolicy.ENABLED)
             }
-            binding.root.setOnClickListener { onItemClick(position) }
+            binding.root.setOnClickListener { onItemClick(songs, position) }
         }
     }
 

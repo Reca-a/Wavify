@@ -2,20 +2,30 @@ package pl.edu.ur.ar131498.wavify
 
 import android.app.PendingIntent
 import android.content.Intent
+import androidx.annotation.OptIn
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
 import androidx.media3.common.MediaItem
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.session.DefaultMediaNotificationProvider
 
 class MusicService : MediaSessionService() {
     private var mediaSession: MediaSession? = null
     private lateinit var player: ExoPlayer
 
+    @OptIn(UnstableApi::class)
     override fun onCreate() {
         super.onCreate()
 
         // Inicjalizacja ExoPlayera
         player = ExoPlayer.Builder(this).build()
+
+        val notificationProvider = DefaultMediaNotificationProvider(this).apply {
+            setSmallIcon(R.drawable.ic_notification)
+        }
+
+        setMediaNotificationProvider(notificationProvider)
 
         // Tworzenie MediaSession
         mediaSession = MediaSession.Builder(this, player)
