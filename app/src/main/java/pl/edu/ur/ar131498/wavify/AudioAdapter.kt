@@ -9,7 +9,8 @@ import pl.edu.ur.ar131498.wavify.databinding.ItemAudioBinding
 
 // Klasa tworząca listę utworów
 class AudioAdapter(
-    private val onItemClick: (List<AudioFile>, Int) -> Unit
+    private val onItemClick: (List<AudioFile>, Int) -> Unit,
+    private val onFavoriteClick: ((AudioFile) -> Unit)? = null
 ) : RecyclerView.Adapter<AudioAdapter.AudioViewHolder>() {
 
     private var songs: List<AudioFile> = emptyList()
@@ -17,6 +18,13 @@ class AudioAdapter(
     fun submitList(newSongs: List<AudioFile>) {
         songs = newSongs
         notifyDataSetChanged()
+    }
+    
+    private lateinit var favoritesManager: FavoritesManager
+
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        super.onAttachedToRecyclerView(recyclerView)
+        favoritesManager = FavoritesManager(recyclerView.context)
     }
 
     inner class AudioViewHolder(private val binding: ItemAudioBinding) :
@@ -31,6 +39,22 @@ class AudioAdapter(
                 memoryCachePolicy(CachePolicy.ENABLED)
                 diskCachePolicy(CachePolicy.ENABLED)
             }
+            
+            // Favorite logic
+            val isFav = favoritesManager.isFavorite(song.uri.toString())
+            binding.favoriteButton.setImageResource(
+                if (isFav) R.drawable.ic_favorite_filled_24 else R.drawable.ic_favorite_border_24
+            )
+            binding.favoriteButton.setOnClickListener {
+                if (isFav) {
+                    favoritesManager.removeFavorite(song.uri.toString())
+                } else {
+                    favoritesManager.addFavorite(song.uri.toString())
+                }
+                notifyItemChanged(position)
+                onFavoriteClick?.invoke(song)
+            }
+
             binding.root.setOnClickListener { onItemClick(songs, position) }
         }
     }

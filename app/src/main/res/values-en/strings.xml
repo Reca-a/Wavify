@@ -15,6 +15,7 @@
 
     <!-- Button descriptions -->
     <string name="author">Author</string>
+    <string name="authors">Authors</string>
     <string name="settings_button">Settings</string>
     <string name="shuffle_button">Shuffle</string>
     <string name="prev_button">Previous</string>
@@ -87,4 +88,15 @@
         \n\nAuthor: Adrian Raczek
     </string>
     <string name="search">Search…</string>
+    <string name="favorite">Favorite</string>
+    <string name="sort">Sort</string>
+    <string name="no_favorites">No favorites</string>
+    <string name="songs">Songs</string>
+    <string name="no_authors">No authors found</string>
+    <string name="title_az">Title (A-Z)</string>
+    <string name="title_za">Title (Z-A)</string>
+    <string name="author_az">Author (A-Z)</string>
+    <string name="author_za">Author (Z-A)</string>
+    <string name="date_newest">Date added (Newest)</string>
+    <string name="date_oldest">Date added (Oldest)</string>
 </resources>

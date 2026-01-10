@@ -14,6 +14,7 @@ class AuthorsFragment : Fragment() {
     private val viewModel: MainViewModel by activityViewModels()
     private lateinit var adapter: AuthorsAdapter
     private lateinit var recyclerView: RecyclerView
+    private lateinit var emptyState: android.widget.TextView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -21,6 +22,7 @@ class AuthorsFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_tracks, container, false)
         recyclerView = view.findViewById(R.id.recyclerView)
+        emptyState = view.findViewById(R.id.emptyState)
         
         setupRecyclerView()
         observeData()
@@ -38,12 +40,16 @@ class AuthorsFragment : Fragment() {
     }
 
     private fun observeData() {
-        viewModel.songs.observe(viewLifecycleOwner) { songs ->
+        viewModel.songs.observe(viewLifecycleOwner) { songs: List<AudioFile> ->
             updateAuthors(viewModel.searchQuery.value ?: "", songs)
         }
         
         viewModel.searchQuery.observe(viewLifecycleOwner) { query ->
             updateAuthors(query, viewModel.songs.value ?: emptyList())
+        }
+        
+        viewModel.sortOrder.observe(viewLifecycleOwner) {
+             updateAuthors(viewModel.searchQuery.value ?: "", viewModel.songs.value ?: emptyList())
         }
     }
     
@@ -51,14 +57,30 @@ class AuthorsFragment : Fragment() {
         val allAuthors = allSongs.mapNotNull { it.artist }
             .filter { it != "<unknown>" }
             .distinct()
-            .sorted()
+            
+        // Getting sort order from ViewModel
+        val sortOrder = viewModel.sortOrder.value ?: SortOrder.DATE_DESC
+        
+        val sortedAuthors = when(sortOrder) {
+            SortOrder.ARTIST_DESC, SortOrder.TITLE_DESC, SortOrder.DATE_DESC -> allAuthors.sortedDescending()
+            else -> allAuthors.sorted()
+        }
 
         val filteredAuthors = if (query.isEmpty()) {
-            allAuthors
+            sortedAuthors
         } else {
-            allAuthors.filter { it.contains(query, ignoreCase = true) }
+            sortedAuthors.filter { it.contains(query, ignoreCase = true) }
         }
         
         adapter.submitList(filteredAuthors)
+        
+        if (filteredAuthors.isEmpty()) {
+            recyclerView.visibility = View.GONE
+            emptyState.visibility = View.VISIBLE
+            emptyState.text = getString(R.string.no_authors)
+        } else {
+            recyclerView.visibility = View.VISIBLE
+            emptyState.visibility = View.GONE
+        }
     }
 }

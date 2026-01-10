@@ -31,7 +31,8 @@ object MusicRepository {
             MediaStore.Audio.Media._ID,
             MediaStore.Audio.Media.TITLE,
             MediaStore.Audio.Media.ARTIST,
-            MediaStore.Audio.Media.ALBUM_ID
+            MediaStore.Audio.Media.ALBUM_ID,
+            MediaStore.Audio.Media.DATE_ADDED
         )
 
         val selection = "${MediaStore.Audio.Media.IS_MUSIC} != 0"
@@ -48,12 +49,14 @@ object MusicRepository {
             val titleColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE)
             val artistColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST)
             val albumIdColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID)
+            val dateAddedColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATE_ADDED)
 
             while (cursor.moveToNext()) {
                 val id = cursor.getLong(idColumn)
                 val title = cursor.getString(titleColumn)
                 val artist = cursor.getString(artistColumn)
                 val albumId = cursor.getLong(albumIdColumn)
+                val dateAdded = cursor.getLong(dateAddedColumn)
 
                 val contentUri = ContentUris.withAppendedId(
                     MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
@@ -65,7 +68,7 @@ object MusicRepository {
                     albumId
                 )
 
-                audioList.add(AudioFile(contentUri, title, artist, albumArtUri))
+                audioList.add(AudioFile(contentUri, title, artist, albumArtUri, dateAdded))
             }
         }
 

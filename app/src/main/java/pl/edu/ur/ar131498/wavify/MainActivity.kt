@@ -214,6 +214,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupSearch() {
+        // Sort Button Listener
+        findViewById<android.widget.ImageButton>(R.id.sortButton).setOnClickListener {
+            showSortDialog()
+        }
+        
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 viewModel.updateSearchQuery(query ?: "")
@@ -245,8 +250,9 @@ class MainActivity : AppCompatActivity() {
 
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
             tab.text = when(position) {
-                0 -> "Utwory"
-                1 -> "Autorzy"
+                0 -> getString(R.string.songs)
+                1 -> getString(R.string.authors)
+                2 -> getString(R.string.favorite)
                 else -> ""
             }
         }.attach()
@@ -259,16 +265,43 @@ class MainActivity : AppCompatActivity() {
         }
     }
     
+    
     private inner class ScreenSlidePagerAdapter(fa: AppCompatActivity) : FragmentStateAdapter(fa) {
-        override fun getItemCount(): Int = 2
+        override fun getItemCount(): Int = 3
 
         override fun createFragment(position: Int): Fragment {
             return when(position) {
                 0 -> TracksFragment()
                 1 -> AuthorsFragment()
+                2 -> FavoritesFragment()
                 else -> TracksFragment()
             }
         }
+    }
+    
+    fun showSortDialog() {
+        val options = arrayOf(
+            getString(R.string.title_az),
+            getString(R.string.title_za),
+            getString(R.string.author_az),
+            getString(R.string.author_za),
+            getString(R.string.date_newest),
+            getString(R.string.date_oldest)
+        )
+        android.app.AlertDialog.Builder(this)
+            .setTitle(getString(R.string.sort))
+            .setItems(options) { _, which ->
+                val order = when (which) {
+                    0 -> SortOrder.TITLE_ASC
+                    1 -> SortOrder.TITLE_DESC
+                    2 -> SortOrder.ARTIST_ASC
+                    3 -> SortOrder.ARTIST_DESC
+                    4 -> SortOrder.DATE_DESC
+                    else -> SortOrder.DATE_ASC
+                }
+                viewModel.setSortOrder(order)
+            }
+            .show()
     }
 
     private fun applyTheme(theme: String) {

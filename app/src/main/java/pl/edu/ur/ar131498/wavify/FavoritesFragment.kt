@@ -8,13 +8,14 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import android.widget.TextView
 
-class TracksFragment : Fragment() {
+class FavoritesFragment : Fragment() {
 
     private val viewModel: MainViewModel by activityViewModels()
     private lateinit var adapter: AudioAdapter
     private lateinit var recyclerView: RecyclerView
-    private lateinit var emptyState: android.widget.TextView
+    private lateinit var emptyState: TextView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,8 +36,8 @@ class TracksFragment : Fragment() {
             onItemClick = { list, position ->
                 (activity as? MainActivity)?.openAudioActivity(list, position)
             },
-            onFavoriteClick = { song ->
-                viewModel.toggleFavorite(song.uri.toString())
+            onFavoriteClick = { 
+                viewModel.toggleFavorite(it.uri.toString())
             }
         )
         recyclerView.layoutManager = LinearLayoutManager(context)
@@ -44,20 +45,26 @@ class TracksFragment : Fragment() {
     }
 
     private fun observeData() {
-        viewModel.songs.observe(viewLifecycleOwner) { songs ->
-            filterSongs(viewModel.searchQuery.value ?: "", songs)
+        viewModel.favorites.observe(viewLifecycleOwner) { favs ->
+            // Also filter by search query if needed?
+            // User requested search to filter both lists. 
+            // Should it filter favorites too? Probably yes.
+            filterFavorites(viewModel.searchQuery.value ?: "", favs)
         }
         
         viewModel.searchQuery.observe(viewLifecycleOwner) { query ->
-            filterSongs(query, viewModel.songs.value ?: emptyList())
+            filterFavorites(query, viewModel.favorites.value ?: emptyList())
         }
+        
+        // Initial load
+        viewModel.refreshFavorites()
     }
     
-    private fun filterSongs(query: String, allSongs: List<AudioFile>) {
-        val filtered = if (query.isEmpty()) {
-            allSongs
+    private fun filterFavorites(query: String, allFavs: List<AudioFile>) {
+         val filtered = if (query.isEmpty()) {
+            allFavs
         } else {
-            allSongs.filter { 
+            allFavs.filter { 
                 it.title.contains(query, ignoreCase = true) || 
                 (it.artist?.contains(query, ignoreCase = true) == true)
             }
@@ -65,12 +72,17 @@ class TracksFragment : Fragment() {
         adapter.submitList(filtered)
         
         if (filtered.isEmpty()) {
-            recyclerView.visibility = View.GONE
             emptyState.visibility = View.VISIBLE
-            emptyState.text = getString(R.string.no_files_big) // Or generic "No songs found"
+            emptyState.text = getString(R.string.no_favorites)
+            recyclerView.visibility = View.GONE
         } else {
-            recyclerView.visibility = View.VISIBLE
             emptyState.visibility = View.GONE
+            recyclerView.visibility = View.VISIBLE
         }
+    }
+    
+    override fun onResume() {
+        super.onResume()
+        viewModel.refreshFavorites()
     }
 }
