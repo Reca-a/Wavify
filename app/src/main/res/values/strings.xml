@@ -9,6 +9,8 @@
     <string name="no_audio_files">Brak plików audio lub nie przyznano uprawnień</string>
     <string name="no_files_big">Pliki audio nie znalezione</string>
     <string name="no_files_desc">Dodaj utwory na swoje urządzenie lub zezwól na uprawnienia</string>
+    <string name="search">Szukaj…</string>
+    <string name="author">Autor</string>
 
     <!-- Opisy przycisków -->
     <string name="settings_button">Ustawienia</string>

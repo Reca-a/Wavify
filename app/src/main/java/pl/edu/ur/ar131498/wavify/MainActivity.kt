@@ -8,7 +8,9 @@ import android.os.Bundle
 import android.transition.Fade
 import android.transition.Slide
 import android.view.Gravity
+import android.view.View
 import android.view.Window
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
@@ -18,19 +20,22 @@ import androidx.media3.common.Player
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import androidx.preference.PreferenceManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import pl.edu.ur.ar131498.wavify.databinding.ActivityMainBinding
-import com.google.android.material.button.MaterialButton
-import android.view.View
-import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.widget.SearchView
+import androidx.activity.viewModels
+import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.fragment.app.Fragment
+import com.google.android.material.tabs.TabLayoutMediator
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 import coil.load
+import com.google.android.material.button.MaterialButton
+import pl.edu.ur.ar131498.wavify.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private var songs: List<AudioFile> = emptyList()
+    private val viewModel: MainViewModel by viewModels()
     private var mediaController: MediaController? = null
-    private lateinit var adapter : AudioAdapter
 
     private val permissionLauncher =
         registerForActivityResult(
@@ -46,7 +51,7 @@ class MainActivity : AppCompatActivity() {
             if (audioGranted) {
                 reloadSongs()
             } else {
-                showEmptyState()
+                // Handle permission denied logic if needed
             }
         }
 
@@ -86,23 +91,11 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, SettingsActivity::class.java))
         }
 
+        setupSearch()
+        setupPager()
+
         // Pobranie utworów
-        songs = MusicRepository.getLocalAudioFiles(this)
-
-        if (songs.isEmpty()) {
-            showEmptyState()
-        } else {
-            hideEmptyState()
-        }
-
-        // Wczytanie utworów
-        adapter = AudioAdapter { list, position ->
-            openAudioActivity(list, position)
-        }
-
-        binding.recyclerView.layoutManager = LinearLayoutManager(this)
-        binding.recyclerView.adapter = adapter
-        adapter.submitList(songs)
+        reloadSongs()
 
         binding.bottomPlayer.root.setOnClickListener {
             startActivity(
@@ -197,7 +190,7 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
-    private fun openAudioActivity(list: List<AudioFile>, position: Int) {
+    fun openAudioActivity(list: List<AudioFile>, position: Int) {
         val intent = Intent(this, AudioActivity::class.java).apply {
             putExtra("START_INDEX", position)
             putStringArrayListExtra(
@@ -220,25 +213,62 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    private fun reloadSongs() {
-        songs = MusicRepository.getLocalAudioFiles(this)
+    private fun setupSearch() {
+        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                viewModel.updateSearchQuery(query ?: "")
+                return true
+            }
 
-        if (songs.isEmpty()) {
-            showEmptyState()
-        } else {
-            hideEmptyState()
-            adapter.submitList(songs)
+            override fun onQueryTextChange(newText: String?): Boolean {
+                if (newText != viewModel.searchQuery.value) {
+                    viewModel.updateSearchQuery(newText ?: "")
+                }
+                return true
+            }
+        })
+
+        viewModel.searchQuery.observe(this) { query ->
+            if (binding.searchView.query.toString() != query) {
+                binding.searchView.setQuery(query, false)
+            }
         }
     }
 
-    private fun showEmptyState() {
-        binding.recyclerView.visibility = View.GONE
-        binding.emptyState.visibility = View.VISIBLE
+    fun switchToTracksTab() {
+        binding.viewPager.currentItem = 0
     }
 
-    private fun hideEmptyState() {
-        binding.recyclerView.visibility = View.VISIBLE
-        binding.emptyState.visibility = View.GONE
+    private fun setupPager() {
+        val pagerAdapter = ScreenSlidePagerAdapter(this)
+        binding.viewPager.adapter = pagerAdapter
+
+        TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
+            tab.text = when(position) {
+                0 -> "Utwory"
+                1 -> "Autorzy"
+                else -> ""
+            }
+        }.attach()
+    }
+
+    private fun reloadSongs() {
+        lifecycleScope.launch {
+             val songs = MusicRepository.getLocalAudioFiles(this@MainActivity)
+             viewModel.loadSongs(songs)
+        }
+    }
+    
+    private inner class ScreenSlidePagerAdapter(fa: AppCompatActivity) : FragmentStateAdapter(fa) {
+        override fun getItemCount(): Int = 2
+
+        override fun createFragment(position: Int): Fragment {
+            return when(position) {
+                0 -> TracksFragment()
+                1 -> AuthorsFragment()
+                else -> TracksFragment()
+            }
+        }
     }
 
     private fun applyTheme(theme: String) {

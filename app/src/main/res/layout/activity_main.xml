@@ -18,9 +18,26 @@
 
             <include layout="@layout/component_header"/>
 
-            <!-- Lista utworów -->
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView"
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/searchView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:background="@drawable/rounded_background"
+                app:iconifiedByDefault="false"
+                app:queryHint="@string/search" />
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tabLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/Widget.MaterialComponents.TabLayout.Colored"
+                android:background="@android:color/transparent"
+                app:tabTextColor="?attr/colorOnSurface"
+                app:tabIndicatorColor="?attr/colorOnSurface"/>
+
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/viewPager"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"/>

@@ -14,6 +14,7 @@
     <string name="no_files_desc">Add music files to your device or grant the required permissions</string>
 
     <!-- Button descriptions -->
+    <string name="author">Author</string>
     <string name="settings_button">Settings</string>
     <string name="shuffle_button">Shuffle</string>
     <string name="prev_button">Previous</string>
@@ -85,4 +86,5 @@
         An application developed as part of the PUM course at the University of Rzeszów.
         \n\nAuthor: Adrian Raczek
     </string>
+    <string name="search">Search…</string>
 </resources>
