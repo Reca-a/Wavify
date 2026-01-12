@@ -15,6 +15,8 @@
     <string name="authors">Artyści</string>
     <string name="no_authors">Nie znaleziono artystów</string>
     <string name="favorite">Ulubione</string>
+    <string name="add_to_favorites">Dodaj do ulubionych</string>
+    <string name="remove_from_favorites">Usuń z ulubionych</string>
     <string name="sort">Sortuj</string>
     <string name="no_favorites">Brak ulubionych</string>
     <string name="songs">Utwory</string>
@@ -24,6 +26,27 @@
     <string name="author_za">Artysta (Z-A)</string>
     <string name="date_newest">Data dodania (Najnowsze)</string>
     <string name="date_oldest">Data dodania (Najstarsze)</string>
+    <string name="playlists">Playlisty</string>
+    <string name="create_playlist">Utwórz playlistę</string>
+    <string name="add_to_playlist">Dodaj do playlisty</string>
+    <string name="remove_from_playlist">Usuń z playlisty</string>
+    <string name="playlist_created">Playlista utworzona</string>
+    <string name="playlist_deleted">Playlista usunięta</string>
+    <string name="playlist_exists">Playlista o tej nazwie już istnieje</string>
+    <string name="song_added_to_playlist">Utwór dodany do playlisty</string>
+    <string name="song_removed_from_playlist">Utwór usunięty z playlisty</string>
+    <string name="song_already_in_playlist">Ten utwór jest już w tej playliście. Dodać ponownie?</string>
+    <string name="add_duplicate">Dodaj duplikat</string>
+    <string name="new_playlist">Nowa playlista</string>
+    <string name="delete_playlist_confirm">Czy na pewno chcesz usunąć tę playlistę?</string>
+    <string name="enter_playlist_name">Podaj nazwę playlisty</string>
+    <string name="cancel">Anuluj</string>
+    <string name="create">Utwórz</string>
+    <string name="empty_playlist">Pusta playlista</string>
+    <string name="confirm">Potwierdź</string>
+    <string name="delete">Usuń</string>
+    <string name="no_playlists_desc">Brak playlist</string>
+    <string name="name_not_allowed">Nazwa zawiera niedozwolone znaki</string>
 
     <!-- Opisy przycisków -->
     <string name="settings_button">Ustawienia</string>
@@ -97,4 +120,23 @@
     <string name="about_desc">Aplikacja wykonana w ramach zajęć PUM na Uniwersytecie Rzeszowskim.
         \n\nAutor: Adrian Raczek</string>
 
+    <plurals name="songs_count">
+        <item quantity="zero">%d utworów</item>
+        <item quantity="one">%d utwór</item>
+        <item quantity="few">%d utwory</item>
+        <item quantity="many">%d utworów</item>
+    </plurals>
+
+    <!-- Sleep Timer -->
+    <string name="sleep_timer">Wyłącznik czasowy</string>
+    <string name="sleep_timer_set">Ustaw wyłącznik czasowy</string>
+    <string name="sleep_timer_set_for">Muzyka wyłączy się za %d min</string>
+    <string name="sleep_timer_off">Wyłącznik nieaktywny</string>
+    <string name="min_15">15 minut</string>
+    <string name="min_30">30 minut</string>
+    <string name="min_45">45 minut</string>
+    <string name="min_60">1 godzina</string>
+    <string name="min_120">2 godziny</string>
+    <string name="stop_timer">Zatrzymaj timer</string>
+    <string name="timer_finished">Timer: zakończono odliczanie. Utwór zatrzymany</string>
 </resources>

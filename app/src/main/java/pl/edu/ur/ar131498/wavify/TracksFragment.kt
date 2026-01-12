@@ -35,8 +35,10 @@ class TracksFragment : Fragment() {
             onItemClick = { list, position ->
                 (activity as? MainActivity)?.openAudioActivity(list, position)
             },
-            onFavoriteClick = { song ->
-                viewModel.toggleFavorite(song.uri.toString())
+            onItemLongClick = { song ->
+                SongMenuBottomSheet(requireContext(), song) {
+                    viewModel.refreshFavorites()
+                }.show()
             }
         )
         recyclerView.layoutManager = LinearLayoutManager(context)
@@ -67,7 +69,7 @@ class TracksFragment : Fragment() {
         if (filtered.isEmpty()) {
             recyclerView.visibility = View.GONE
             emptyState.visibility = View.VISIBLE
-            emptyState.text = getString(R.string.no_files_big) // Or generic "No songs found"
+            emptyState.text = getString(R.string.no_files_big)
         } else {
             recyclerView.visibility = View.VISIBLE
             emptyState.visibility = View.GONE

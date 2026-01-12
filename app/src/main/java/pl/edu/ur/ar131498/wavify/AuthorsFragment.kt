@@ -57,8 +57,7 @@ class AuthorsFragment : Fragment() {
         val allAuthors = allSongs.mapNotNull { it.artist }
             .filter { it != "<unknown>" }
             .distinct()
-            
-        // Getting sort order from ViewModel
+
         val sortOrder = viewModel.sortOrder.value ?: SortOrder.DATE_DESC
         
         val sortedAuthors = when(sortOrder) {

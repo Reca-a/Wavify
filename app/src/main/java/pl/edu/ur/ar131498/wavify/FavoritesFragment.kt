@@ -36,8 +36,10 @@ class FavoritesFragment : Fragment() {
             onItemClick = { list, position ->
                 (activity as? MainActivity)?.openAudioActivity(list, position)
             },
-            onFavoriteClick = { 
-                viewModel.toggleFavorite(it.uri.toString())
+            onItemLongClick = { song ->
+                SongMenuBottomSheet(requireContext(), song) {
+                    viewModel.refreshFavorites()
+                }.show()
             }
         )
         recyclerView.layoutManager = LinearLayoutManager(context)
@@ -46,17 +48,13 @@ class FavoritesFragment : Fragment() {
 
     private fun observeData() {
         viewModel.favorites.observe(viewLifecycleOwner) { favs ->
-            // Also filter by search query if needed?
-            // User requested search to filter both lists. 
-            // Should it filter favorites too? Probably yes.
             filterFavorites(viewModel.searchQuery.value ?: "", favs)
         }
         
         viewModel.searchQuery.observe(viewLifecycleOwner) { query ->
             filterFavorites(query, viewModel.favorites.value ?: emptyList())
         }
-        
-        // Initial load
+
         viewModel.refreshFavorites()
     }
     

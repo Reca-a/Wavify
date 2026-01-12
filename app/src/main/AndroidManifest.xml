@@ -44,6 +44,11 @@
             android:name="pl.edu.ur.ar131498.wavify.SettingsActivity"
             android:screenOrientation="portrait"
             tools:ignore="DiscouragedApi,LockedOrientationActivity"/>
+        <activity
+            android:name="pl.edu.ur.ar131498.wavify.PlaylistDetailActivity"
+            android:screenOrientation="portrait"
+            android:parentActivityName="pl.edu.ur.ar131498.wavify.MainActivity"
+            tools:ignore="DiscouragedApi,LockedOrientationActivity"/>
 
         <service
             android:name="pl.edu.ur.ar131498.wavify.MusicService"

@@ -3,23 +3,24 @@ package pl.edu.ur.ar131498.wavify
 import android.Manifest
 import android.content.ContentUris
 import android.content.pm.PackageManager
+import android.content.Context
 import android.os.Build
 import android.provider.MediaStore
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+
 import androidx.core.net.toUri
 
 object MusicRepository {
 
-    fun getLocalAudioFiles(activity: AppCompatActivity): List<AudioFile> {
+    fun getLocalAudioFiles(context: Context): List<AudioFile> {
         val audioList = mutableListOf<AudioFile>()
 
-        val permission = if (Build.VERSION.SDK_INT >= 33)
+        val permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
             Manifest.permission.READ_MEDIA_AUDIO
         else
             Manifest.permission.READ_EXTERNAL_STORAGE
 
-        if (ContextCompat.checkSelfPermission(activity, permission)
+        if (ContextCompat.checkSelfPermission(context, permission)
             != PackageManager.PERMISSION_GRANTED
         ) {
             return emptyList()
@@ -38,7 +39,7 @@ object MusicRepository {
         val selection = "${MediaStore.Audio.Media.IS_MUSIC} != 0"
         val sortOrder = "${MediaStore.Audio.Media.DATE_ADDED} DESC"
 
-        activity.contentResolver.query(
+        val cursor = context.contentResolver.query(
             collection,
             projection,
             selection,

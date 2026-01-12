@@ -79,6 +79,7 @@ class AudioActivity : AppCompatActivity() {
         items = songs.map { song ->
             MediaItem.Builder()
                 .setUri(song.uri)
+                .setMediaId(song.uri.toString())
                 .setMediaMetadata(
                     androidx.media3.common.MediaMetadata.Builder()
                         .setTitle(song.title)
@@ -158,8 +159,25 @@ class AudioActivity : AppCompatActivity() {
             binding.songTitleText.isSelected = true
         }, 3000)
 
-        findViewById<MaterialButton>(R.id.settingsButton).setOnClickListener {
-            startActivity(Intent(this, SettingsActivity::class.java))
+        findViewById<MaterialButton>(R.id.settingsButton).setOnClickListener { view ->
+            val popup = androidx.appcompat.widget.PopupMenu(this, view)
+            popup.menu.add(0, 1, 0, getString(R.string.settings_button))
+            popup.menu.add(0, 2, 0, getString(R.string.sleep_timer))
+            
+            popup.setOnMenuItemClickListener { item ->
+                when(item.itemId) {
+                    1 -> {
+                        startActivity(Intent(this, SettingsActivity::class.java))
+                        true
+                    }
+                    2 -> {
+                        showSleepTimerDialog()
+                        true
+                    }
+                    else -> false
+                }
+            }
+            popup.show()
         }
     }
 
@@ -170,6 +188,7 @@ class AudioActivity : AppCompatActivity() {
         binding.prevButton.setOnClickListener { previousSong() }
         binding.shuffleButton.setOnClickListener { toggleShuffle() }
         binding.repeatButton.setOnClickListener { toggleRepeat() }
+        binding.addToPlaylistButton.setOnClickListener { showAddToPlaylistDialog() }
 
         // Listener dla odtwarzacza
         controller.addListener(object : Player.Listener {
@@ -298,6 +317,14 @@ class AudioActivity : AppCompatActivity() {
         })
     }
 
+    private fun showAddToPlaylistDialog() {
+        if (!::controller.isInitialized) return
+        val currentMedia = controller.currentMediaItem ?: return
+        val uri = currentMedia.mediaId
+        
+        AddToPlaylistBottomSheet(this, uri).show()
+    }
+
     // Przełączanie losowej kolejności utworów
     private fun toggleShuffle() {
         if (!::controller.isInitialized) return
@@ -378,7 +405,7 @@ class AudioActivity : AppCompatActivity() {
         window.attributes = layoutParams
     }
 
-    fun resetDimTimer() {
+    private fun resetDimTimer() {
         // Przywróć pełną jasność
         restoreBrightness()
 
@@ -387,6 +414,43 @@ class AudioActivity : AppCompatActivity() {
         if (isHandGesture) {
             dimHandler.postDelayed(dimRunnable, 10000) // 10 sekund
         }
+    }
+    
+    private fun showSleepTimerDialog() {
+        val options = arrayOf(
+            getString(R.string.min_15),
+            getString(R.string.min_30),
+            getString(R.string.min_45),
+            getString(R.string.min_60),
+            getString(R.string.min_120),
+            getString(R.string.stop_timer)
+        )
+        
+        androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle(R.string.sleep_timer)
+            .setItems(options) { _, which ->
+                val minutes = when(which) {
+                    0 -> 15
+                    1 -> 30
+                    2 -> 45
+                    3 -> 60
+                    4 -> 120
+                    else -> 0
+                }
+                
+                val intent = Intent(this, MusicService::class.java).apply {
+                    action = "ACTION_SLEEP_TIMER"
+                    putExtra("DURATION_MINUTES", minutes)
+                }
+                startService(intent)
+                
+                if (minutes > 0) {
+                    android.widget.Toast.makeText(this, getString(R.string.sleep_timer_set_for, minutes), android.widget.Toast.LENGTH_SHORT).show()
+                } else {
+                    android.widget.Toast.makeText(this, R.string.sleep_timer_off, android.widget.Toast.LENGTH_SHORT).show()
+                }
+            }
+            .show()
     }
 
     override fun onUserInteraction() {
