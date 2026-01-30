@@ -1,4 +1,4 @@
-package pl.edu.ur.ar131498.wavify
+package pl.edu.ur.ar131498.wavify.data
 
 import android.content.Context
 import android.content.SharedPreferences

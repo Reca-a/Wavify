@@ -1,4 +1,4 @@
-package pl.edu.ur.ar131498.wavify
+package pl.edu.ur.ar131498.wavify.data
 
 import android.Manifest
 import android.content.ContentUris
@@ -39,7 +39,7 @@ object MusicRepository {
         val selection = "${MediaStore.Audio.Media.IS_MUSIC} != 0"
         val sortOrder = "${MediaStore.Audio.Media.DATE_ADDED} DESC"
 
-        val cursor = context.contentResolver.query(
+        context.contentResolver.query(
             collection,
             projection,
             selection,

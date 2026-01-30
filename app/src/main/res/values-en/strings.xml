@@ -138,4 +138,14 @@
     <string name="min_120">2 hours</string>
     <string name="stop_timer">Stop timer</string>
     <string name="timer_finished">Timer: countdown finished. Song stopped</string>
+    <string name="details_and_lyrics">Details and lyrics</string>
+    <string name="tab_details">Details</string>
+    <string name="tab_lyrics">Lyrics</string>
+    <string name="file_path">File path</string>
+    <string name="file_size">Size</string>
+    <string name="file_sample_rate">Sample rate</string>
+    <string name="lyrics_loading">Loading lyrics…</string>
+    <string name="lyrics_not_found">Lyrics not found</string>
+    <string name="search_in_browser">Search in browser</string>
+    <string name="details">Details</string>
 </resources>

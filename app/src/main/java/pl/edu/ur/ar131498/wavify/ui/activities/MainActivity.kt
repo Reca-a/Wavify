@@ -29,6 +29,8 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import coil.load
 import com.google.android.material.button.MaterialButton
+import pl.edu.ur.ar131498.wavify.data.AudioFile
+import pl.edu.ur.ar131498.wavify.data.MusicRepository
 import pl.edu.ur.ar131498.wavify.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {

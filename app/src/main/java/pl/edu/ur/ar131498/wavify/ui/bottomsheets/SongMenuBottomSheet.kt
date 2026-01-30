@@ -6,6 +6,9 @@ import android.widget.ImageView
 import android.widget.Toast
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import coil.load
+import pl.edu.ur.ar131498.wavify.data.AudioFile
+import pl.edu.ur.ar131498.wavify.data.FavoritesManager
+import pl.edu.ur.ar131498.wavify.data.PlaylistManager
 
 class SongMenuBottomSheet(
     private val context: Context,

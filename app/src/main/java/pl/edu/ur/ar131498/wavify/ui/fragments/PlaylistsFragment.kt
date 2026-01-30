@@ -11,6 +11,8 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import pl.edu.ur.ar131498.wavify.data.MusicRepository
+import pl.edu.ur.ar131498.wavify.data.PlaylistManager
 import pl.edu.ur.ar131498.wavify.databinding.FragmentPlaylistsBinding
 
 class PlaylistsFragment : Fragment() {

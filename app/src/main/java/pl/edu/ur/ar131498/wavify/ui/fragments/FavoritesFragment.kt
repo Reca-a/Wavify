@@ -9,6 +9,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.widget.TextView
+import pl.edu.ur.ar131498.wavify.data.AudioFile
 
 class FavoritesFragment : Fragment() {
 

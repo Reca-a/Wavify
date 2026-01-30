@@ -5,6 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import coil.request.CachePolicy
+import pl.edu.ur.ar131498.wavify.data.AudioFile
+import pl.edu.ur.ar131498.wavify.data.FavoritesManager
 import pl.edu.ur.ar131498.wavify.databinding.ItemAudioBinding
 
 // Klasa tworząca listę utworów

@@ -184,19 +184,41 @@
                 app:cornerRadius="32dp"/>
         </LinearLayout>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/addToPlaylistButton"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_marginEnd="16dp"
-            android:layout_marginTop="48dp"
-            android:text="@string/add_to_playlist"
-            android:textColor="?attr/colorOnPrimaryContainer"
-            app:icon="@drawable/ic_add_24"
-            app:iconTint="?attr/colorOnPrimaryContainer"
-            app:backgroundTint="?attr/colorPrimaryContainer"
-            app:cornerRadius="24dp"/>
+            android:orientation="horizontal"
+            android:paddingHorizontal="16dp"
+            android:layout_marginTop="32dp"
+            android:gravity="center_vertical">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/addToPlaylistButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:text="@string/add_to_playlist"
+                android:textColor="?attr/colorOnPrimaryContainer"
+                app:icon="@drawable/ic_add_24"
+                app:iconTint="?attr/colorOnPrimaryContainer"
+                app:backgroundTint="?attr/colorPrimaryContainer"
+                app:cornerRadius="24dp"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/songDetailsButton"
+                style="@style/Widget.Material3.Button.TonalButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:contextClickable="true"
+                android:layout_marginStart="8dp"
+                android:text="@string/details_and_lyrics"
+                android:textColor="?attr/colorOnPrimaryContainer"
+                app:backgroundTint="?attr/colorPrimaryContainer"
+                app:cornerRadius="24dp"/>
+
+        </LinearLayout>
 
     </LinearLayout>
 

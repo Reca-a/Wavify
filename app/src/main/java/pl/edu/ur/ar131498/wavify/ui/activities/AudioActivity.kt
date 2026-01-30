@@ -11,6 +11,7 @@ import android.os.Looper
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import pl.edu.ur.ar131498.wavify.databinding.ActivityAudioBinding
+import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.MediaItem
 import androidx.core.view.WindowCompat
 import androidx.media3.common.Player
@@ -23,6 +24,7 @@ import androidx.preference.PreferenceManager
 import com.google.android.material.button.MaterialButton
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
+import pl.edu.ur.ar131498.wavify.data.AudioFile
 
 class AudioActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAudioBinding
@@ -188,7 +190,9 @@ class AudioActivity : AppCompatActivity() {
         binding.prevButton.setOnClickListener { previousSong() }
         binding.shuffleButton.setOnClickListener { toggleShuffle() }
         binding.repeatButton.setOnClickListener { toggleRepeat() }
+
         binding.addToPlaylistButton.setOnClickListener { showAddToPlaylistDialog() }
+        binding.songDetailsButton.setOnClickListener { showSongDetails() }
 
         // Listener dla odtwarzacza
         controller.addListener(object : Player.Listener {
@@ -325,7 +329,33 @@ class AudioActivity : AppCompatActivity() {
         AddToPlaylistBottomSheet(this, uri).show()
     }
 
-    // Przełączanie losowej kolejności utworów
+    private fun showSongDetails() {
+        val currentMediaId = controller.currentMediaItem?.mediaId ?: return
+        val currentUri = currentMediaId.toUri()
+
+        val currentSong = items.find { it.mediaId == currentMediaId }?.let { item ->
+            AudioFile(
+                uri = item.mediaId.toUri(), 
+                title = item.mediaMetadata.title.toString(), 
+                artist = item.mediaMetadata.artist.toString(), 
+                albumArtUri = item.mediaMetadata.artworkUri
+            ) 
+        }
+
+        // Fallback
+        val fallbackSong = AudioFile(
+            currentUri,
+            binding.songTitleText.text.toString(),
+            binding.songArtistText.text.toString(),
+            null
+        )
+
+        val song = currentSong ?: fallbackSong
+        
+        SongDetailsBottomSheet(this, lifecycleScope, song).show()
+    }
+
+    // Funkcja przełączająca losową kolejność utworów
     private fun toggleShuffle() {
         if (!::controller.isInitialized) return
 

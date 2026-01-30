@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import pl.edu.ur.ar131498.wavify.data.MusicRepository
+import pl.edu.ur.ar131498.wavify.data.PlaylistManager
 import pl.edu.ur.ar131498.wavify.databinding.BottomSheetAddToPlaylistBinding
 import pl.edu.ur.ar131498.wavify.databinding.ItemPlaylistSelectionBinding
 
@@ -19,7 +21,6 @@ class AddToPlaylistBottomSheet(
     private val songUri: String
 ) {
     private val playlistManager = PlaylistManager(context)
-    private val musicRepository = MusicRepository
 
     fun show() {
         val dialog = BottomSheetDialog(context)

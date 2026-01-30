@@ -15,6 +15,9 @@ import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
+import pl.edu.ur.ar131498.wavify.data.AudioFile
+import pl.edu.ur.ar131498.wavify.data.MusicRepository
+import pl.edu.ur.ar131498.wavify.data.PlaylistManager
 import pl.edu.ur.ar131498.wavify.databinding.ActivityPlaylistDetailBinding
 
 class PlaylistDetailActivity : AppCompatActivity() {

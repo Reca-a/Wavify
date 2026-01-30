@@ -139,4 +139,18 @@
     <string name="min_120">2 godziny</string>
     <string name="stop_timer">Zatrzymaj timer</string>
     <string name="timer_finished">Timer: zakończono odliczanie. Utwór zatrzymany</string>
+
+    <!-- Details & Lyrics -->
+    <string name="details_and_lyrics">Szczegóły i Tekst</string>
+    <string name="tab_details">Szczegóły</string>
+    <string name="tab_lyrics">Tekst</string>
+    <string name="file_path">Ścieżka pliku</string>
+    <string name="file_size">Rozmiar</string>
+    <string name="file_format" translatable="false">Format</string>
+    <string name="file_bitrate" translatable="false">Bitrate</string>
+    <string name="file_sample_rate">Częstotliwość</string>
+    <string name="lyrics_loading">Szukanie tekstu…</string>
+    <string name="lyrics_not_found">Nie znaleziono tekstu.</string>
+    <string name="search_in_browser">Szukaj w przeglądarce</string>
+    <string name="details">Szczegóły</string>
 </resources>
