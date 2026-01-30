@@ -153,4 +153,7 @@
     <string name="lyrics_not_found">Nie znaleziono tekstu.</string>
     <string name="search_in_browser">Szukaj w przeglądarce</string>
     <string name="details">Szczegóły</string>
+    <string name="welcome_title">Witaj w Wavify</string>
+    <string name="onboarding_message">Szanujemy Twoją prywatność. Aplikacja łączy się z internetem tylko by pobrać teksty utworów. \n\nWypróbuj sterowanie gestami (np. potrząśnięcie), które możesz skonfigurować w Ustawieniach.</string>
+    <string name="understand">Rozumiem</string>
 </resources>

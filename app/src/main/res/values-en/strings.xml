@@ -148,4 +148,7 @@
     <string name="lyrics_not_found">Lyrics not found</string>
     <string name="search_in_browser">Search in browser</string>
     <string name="details">Details</string>
+    <string name="welcome_title">Welcome to Wavify</string>
+    <string name="onboarding_message">We respect your privacy. The app connects to the internet only to fetch song lyrics. \\n\\nTry gesture controls (e.g. shake) that you can customize in Settings.</string>
+    <string name="understand">I understand</string>
 </resources>

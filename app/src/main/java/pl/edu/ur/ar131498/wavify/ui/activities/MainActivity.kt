@@ -72,6 +72,11 @@ class MainActivity : AppCompatActivity() {
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
         val theme = prefs.getString("pref_theme_mode", "system")!!
         applyTheme(theme)
+        
+        // Pierwsze uruchomienie
+        if (prefs.getBoolean("is_first_run", true)) {
+            showOnboardingDialog()
+        }
 
         // Usunięcie koloru górnego paska
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -122,6 +127,20 @@ class MainActivity : AppCompatActivity() {
                 if (it.isPlaying) it.pause() else it.play()
             }
         }
+    }
+    
+    private fun showOnboardingDialog() {
+        android.app.AlertDialog.Builder(this)
+            .setTitle(getString(R.string.welcome_title))
+            .setMessage(getString(R.string.onboarding_message))
+            .setPositiveButton(getString(R.string.understand)) { _, _ ->
+                PreferenceManager.getDefaultSharedPreferences(this)
+                    .edit()
+                    .putBoolean("is_first_run", false)
+                    .apply()
+            }
+            .setCancelable(false)
+            .show()
     }
 
     override fun onStart() {

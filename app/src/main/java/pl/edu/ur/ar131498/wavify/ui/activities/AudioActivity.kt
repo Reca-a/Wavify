@@ -55,6 +55,8 @@ class AudioActivity : AppCompatActivity() {
             dimScreen()
         }
     }
+    
+    private var songDetailsSheet: SongDetailsBottomSheet? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -202,11 +204,27 @@ class AudioActivity : AppCompatActivity() {
         binding.addToPlaylistButton.setOnClickListener { showAddToPlaylistDialog() }
         binding.songDetailsButton.setOnClickListener { showSongDetails() }
 
-        // Listener dla odtwarzacza
+
+
+    // Listener dla odtwarzacza
         controller.addListener(object : Player.Listener {
             // Zmiana utworu
             override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
                 refreshFromController()
+
+                if (songDetailsSheet?.isShowing == true) {
+                    val currentSong = getCurrentSongFromController()
+                    if (currentSong != null) {
+                        try {
+                           songDetailsSheet?.updateSong(currentSong)
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                            songDetailsSheet?.dismiss()
+                            songDetailsSheet = null
+                            showSongDetails()
+                        }
+                    }
+                }
             }
 
             // Pauza / odtworzenie
@@ -329,6 +347,29 @@ class AudioActivity : AppCompatActivity() {
         })
     }
 
+    private fun getCurrentSongFromController(): AudioFile? {
+        val currentMediaId = controller.currentMediaItem?.mediaId ?: return null
+
+        val foundItem = items.find { it.mediaId == currentMediaId }
+        
+        return if (foundItem != null) {
+            AudioFile(
+                uri = foundItem.mediaId.toUri(), 
+                title = foundItem.mediaMetadata.title.toString(), 
+                artist = foundItem.mediaMetadata.artist.toString(), 
+                albumArtUri = foundItem.mediaMetadata.artworkUri
+            )
+        } else {
+             val metadata = controller.currentMediaItem?.mediaMetadata ?: return null
+             AudioFile(
+                uri = currentMediaId.toUri(),
+                title = metadata.title.toString(),
+                artist = metadata.artist.toString(),
+                albumArtUri = metadata.artworkUri
+             )
+        }
+    }
+
     private fun showAddToPlaylistDialog() {
         if (!::controller.isInitialized) return
         val currentMedia = controller.currentMediaItem ?: return
@@ -338,29 +379,11 @@ class AudioActivity : AppCompatActivity() {
     }
 
     private fun showSongDetails() {
-        val currentMediaId = controller.currentMediaItem?.mediaId ?: return
-        val currentUri = currentMediaId.toUri()
-
-        val currentSong = items.find { it.mediaId == currentMediaId }?.let { item ->
-            AudioFile(
-                uri = item.mediaId.toUri(), 
-                title = item.mediaMetadata.title.toString(), 
-                artist = item.mediaMetadata.artist.toString(), 
-                albumArtUri = item.mediaMetadata.artworkUri
-            ) 
-        }
-
-        // Fallback
-        val fallbackSong = AudioFile(
-            currentUri,
-            binding.songTitleText.text.toString(),
-            binding.songArtistText.text.toString(),
-            null
-        )
-
-        val song = currentSong ?: fallbackSong
+        val currentSong = getCurrentSongFromController() ?: return
         
-        SongDetailsBottomSheet(this, lifecycleScope, song).show()
+        songDetailsSheet = SongDetailsBottomSheet(this, lifecycleScope, currentSong)
+        songDetailsSheet?.setOnDismissListener { songDetailsSheet = null }
+        songDetailsSheet?.show()
     }
 
     // Funkcja przełączająca losową kolejność utworów

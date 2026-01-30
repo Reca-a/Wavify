@@ -76,15 +76,61 @@ class SongDetailsBottomSheet(
         }
     }
 
+    fun updateSong(newSong: AudioFile) {
+        // Update the current song
+        val field = SongDetailsBottomSheet::class.java.getDeclaredField("song")
+        field.isAccessible = true
+        field.set(this, newSong)
+        
+        // Update UI
+        val detailsText = findViewById<TextView>(R.id.detailsText)
+        if (detailsText != null) {
+            val details = buildString {
+                append("${context.getString(R.string.song_title)}: ${newSong.title}\n")
+                append("${context.getString(R.string.song_artist)}: ${newSong.artist ?: context.getString(R.string.unknown_artist)}\n")
+                append("${context.getString(R.string.file_path)}: ${newSong.uri.path}\n")
+            }
+            detailsText.text = details
+        }
+
+        // Reset lyrics state
+        if (::lyricsText.isInitialized) {
+            lyricsText.text = context.getString(R.string.lyrics_not_found)
+            lyricsText.visibility = View.GONE
+            searchButton.visibility = View.GONE
+            progressBar.visibility = View.GONE
+            
+            // Reload if on lyrics tab
+            val tabLayout = findViewById<TabLayout>(R.id.tabLayout)
+            if (tabLayout?.selectedTabPosition == 1) {
+                loadLyrics()
+            }
+        }
+    }
+
     private fun loadLyrics() {
+        if (!::lyricsText.isInitialized) return
         if (lyricsText.text != context.getString(R.string.lyrics_not_found)) return
 
         progressBar.visibility = View.VISIBLE
         lyricsText.visibility = View.GONE
         searchButton.visibility = View.GONE
 
+        // Access current song via reflection since it's private val and we can't easily change constructor
+        // OR better, just rely on the fact we supposedly updated it via reflection above
+        // But wait, 'song' is a private val in constructor. I can't easily change it to var without changing the primary constructor signature in the file which is fine but replace_file_content is block based. 
+        // Actually, I can just use the field reflection trick or just assume I can pass it to loadLyrics if I change loadLyrics signature? 
+        // Easier: I will just use reflection to update the backing field of 'song' as I did above.
+        
+        // However, instead of reflection, which is hacky, I will just change the class to use 'var' in a separate edit if needed, 
+        // BUT 'song' is in the primary constructor. 
+        // Let's just use the reflection approach for now as it minimizes changes to the file structure, or better yet, I should check if I can just pass 'song' to loadLyrics.
+        // loadLyrics uses 'song' property.
+        
         scope.launch {
             // Wyszukanie tekstu przez API
+            // We need to access the updated song. 
+            // Since I updated the field via reflection, 'this.song' should be the new song.
             val lyrics = repository.fetchLyrics(song.artist ?: "", song.title)
 
             withContext(Dispatchers.Main) {
