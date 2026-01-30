@@ -1,4 +1,4 @@
-package pl.edu.ur.ar131498.wavify
+package pl.edu.ur.ar131498.wavify.ui.bottomsheets
 
 import android.content.Context
 import android.widget.TextView
@@ -6,6 +6,7 @@ import android.widget.ImageView
 import android.widget.Toast
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import coil.load
+import pl.edu.ur.ar131498.wavify.R
 import pl.edu.ur.ar131498.wavify.data.AudioFile
 import pl.edu.ur.ar131498.wavify.data.FavoritesManager
 import pl.edu.ur.ar131498.wavify.data.PlaylistManager
@@ -25,7 +26,9 @@ class SongMenuBottomSheet(
         val playlistManager = PlaylistManager(context)
 
         dialog.findViewById<TextView>(R.id.sheetSongTitle)?.text = song.title
-        val artistText = if (!song.artist.isNullOrEmpty() && song.artist != "<unknown>") song.artist else context.getString(R.string.unknown_artist)
+        val artistText = if (!song.artist.isNullOrEmpty() && song.artist != "<unknown>") song.artist else context.getString(
+            R.string.unknown_artist
+        )
         dialog.findViewById<TextView>(R.id.sheetSongArtist)?.text = artistText
         
         val albumArtView = dialog.findViewById<ImageView>(R.id.sheetAlbumArt)

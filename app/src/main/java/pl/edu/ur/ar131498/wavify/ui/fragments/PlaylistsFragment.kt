@@ -1,4 +1,4 @@
-package pl.edu.ur.ar131498.wavify
+package pl.edu.ur.ar131498.wavify.ui.fragments
 
 import android.app.AlertDialog
 import android.content.Intent
@@ -11,9 +11,15 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import pl.edu.ur.ar131498.wavify.ui.viewmodel.MainViewModel
+import pl.edu.ur.ar131498.wavify.R
+import pl.edu.ur.ar131498.wavify.ui.viewmodel.SortOrder
 import pl.edu.ur.ar131498.wavify.data.MusicRepository
 import pl.edu.ur.ar131498.wavify.data.PlaylistManager
 import pl.edu.ur.ar131498.wavify.databinding.FragmentPlaylistsBinding
+import pl.edu.ur.ar131498.wavify.ui.activities.PlaylistDetailActivity
+import pl.edu.ur.ar131498.wavify.ui.adapters.PlaylistAdapter
+import pl.edu.ur.ar131498.wavify.ui.adapters.PlaylistUIModel
 
 class PlaylistsFragment : Fragment() {
 

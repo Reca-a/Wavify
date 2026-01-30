@@ -1,4 +1,4 @@
-package pl.edu.ur.ar131498.wavify
+package pl.edu.ur.ar131498.wavify.ui.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel

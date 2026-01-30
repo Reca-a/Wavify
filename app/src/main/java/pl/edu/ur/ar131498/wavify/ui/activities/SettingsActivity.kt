@@ -1,4 +1,4 @@
-package pl.edu.ur.ar131498.wavify
+package pl.edu.ur.ar131498.wavify.ui.activities
 
 import android.os.Bundle
 import android.view.View.GONE
@@ -12,6 +12,7 @@ import androidx.preference.PreferenceFragmentCompat
 import com.google.android.material.button.MaterialButton
 import android.content.Intent
 import androidx.core.net.toUri
+import pl.edu.ur.ar131498.wavify.R
 
 class SettingsActivity : AppCompatActivity() {
 

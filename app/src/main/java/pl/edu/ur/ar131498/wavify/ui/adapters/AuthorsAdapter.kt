@@ -1,10 +1,11 @@
-package pl.edu.ur.ar131498.wavify
+package pl.edu.ur.ar131498.wavify.ui.adapters
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import pl.edu.ur.ar131498.wavify.R
 
 class AuthorsAdapter(
     private val onAuthorClick: (String) -> Unit

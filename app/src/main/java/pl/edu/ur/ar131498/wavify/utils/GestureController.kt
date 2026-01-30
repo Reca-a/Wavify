@@ -1,4 +1,4 @@
-package pl.edu.ur.ar131498.wavify
+package pl.edu.ur.ar131498.wavify.utils
 
 enum class GestureAction {
     NEXT,

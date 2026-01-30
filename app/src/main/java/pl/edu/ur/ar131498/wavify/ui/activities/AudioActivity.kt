@@ -1,4 +1,4 @@
-package pl.edu.ur.ar131498.wavify
+package pl.edu.ur.ar131498.wavify.ui.activities
 
 import android.annotation.SuppressLint
 import android.content.ComponentName
@@ -24,7 +24,15 @@ import androidx.preference.PreferenceManager
 import com.google.android.material.button.MaterialButton
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
+import pl.edu.ur.ar131498.wavify.ui.bottomsheets.AddToPlaylistBottomSheet
+import pl.edu.ur.ar131498.wavify.utils.GestureAction
+import pl.edu.ur.ar131498.wavify.utils.GestureController
+import pl.edu.ur.ar131498.wavify.utils.HandGestureController
+import pl.edu.ur.ar131498.wavify.utils.MotionGestureController
+import pl.edu.ur.ar131498.wavify.R
+import pl.edu.ur.ar131498.wavify.ui.bottomsheets.SongDetailsBottomSheet
 import pl.edu.ur.ar131498.wavify.data.AudioFile
+import pl.edu.ur.ar131498.wavify.service.MusicService
 
 class AudioActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAudioBinding

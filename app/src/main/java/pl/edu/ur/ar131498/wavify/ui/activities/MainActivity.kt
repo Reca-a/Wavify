@@ -1,4 +1,4 @@
-package pl.edu.ur.ar131498.wavify
+package pl.edu.ur.ar131498.wavify.ui.activities
 
 import android.Manifest
 import android.content.ComponentName
@@ -29,9 +29,17 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import coil.load
 import com.google.android.material.button.MaterialButton
+import pl.edu.ur.ar131498.wavify.ui.fragments.AuthorsFragment
+import pl.edu.ur.ar131498.wavify.ui.fragments.FavoritesFragment
+import pl.edu.ur.ar131498.wavify.ui.viewmodel.MainViewModel
+import pl.edu.ur.ar131498.wavify.ui.fragments.PlaylistsFragment
+import pl.edu.ur.ar131498.wavify.R
+import pl.edu.ur.ar131498.wavify.ui.viewmodel.SortOrder
+import pl.edu.ur.ar131498.wavify.ui.fragments.TracksFragment
 import pl.edu.ur.ar131498.wavify.data.AudioFile
 import pl.edu.ur.ar131498.wavify.data.MusicRepository
 import pl.edu.ur.ar131498.wavify.databinding.ActivityMainBinding
+import pl.edu.ur.ar131498.wavify.service.MusicService
 
 class MainActivity : AppCompatActivity() {
 

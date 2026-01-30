@@ -1,4 +1,4 @@
-package pl.edu.ur.ar131498.wavify
+package pl.edu.ur.ar131498.wavify.ui.activities
 
 import android.content.ComponentName
 import android.content.Intent
@@ -15,10 +15,14 @@ import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
+import pl.edu.ur.ar131498.wavify.ui.adapters.AudioAdapter
+import pl.edu.ur.ar131498.wavify.R
+import pl.edu.ur.ar131498.wavify.ui.bottomsheets.SongMenuBottomSheet
 import pl.edu.ur.ar131498.wavify.data.AudioFile
 import pl.edu.ur.ar131498.wavify.data.MusicRepository
 import pl.edu.ur.ar131498.wavify.data.PlaylistManager
 import pl.edu.ur.ar131498.wavify.databinding.ActivityPlaylistDetailBinding
+import pl.edu.ur.ar131498.wavify.service.MusicService
 
 class PlaylistDetailActivity : AppCompatActivity() {
 

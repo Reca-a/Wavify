@@ -1,4 +1,4 @@
-package pl.edu.ur.ar131498.wavify
+package pl.edu.ur.ar131498.wavify.ui.bottomsheets
 
 import android.content.Context
 import android.content.Intent
@@ -14,6 +14,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import pl.edu.ur.ar131498.wavify.data.LyricsRepository
 import androidx.core.net.toUri
+import pl.edu.ur.ar131498.wavify.R
 import pl.edu.ur.ar131498.wavify.data.AudioFile
 
 class SongDetailsBottomSheet(

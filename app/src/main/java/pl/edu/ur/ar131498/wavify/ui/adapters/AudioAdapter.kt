@@ -1,10 +1,11 @@
-package pl.edu.ur.ar131498.wavify
+package pl.edu.ur.ar131498.wavify.ui.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import coil.request.CachePolicy
+import pl.edu.ur.ar131498.wavify.R
 import pl.edu.ur.ar131498.wavify.data.AudioFile
 import pl.edu.ur.ar131498.wavify.data.FavoritesManager
 import pl.edu.ur.ar131498.wavify.databinding.ItemAudioBinding

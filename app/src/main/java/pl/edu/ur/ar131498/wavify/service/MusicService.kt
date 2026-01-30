@@ -1,4 +1,4 @@
-package pl.edu.ur.ar131498.wavify
+package pl.edu.ur.ar131498.wavify.service
 
 import android.app.PendingIntent
 import android.content.Intent
@@ -7,9 +7,10 @@ import androidx.annotation.OptIn
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
-import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.DefaultMediaNotificationProvider
+import pl.edu.ur.ar131498.wavify.ui.activities.AudioActivity
+import pl.edu.ur.ar131498.wavify.R
 
 class MusicService : MediaSessionService() {
     private val timerHandler = android.os.Handler(android.os.Looper.getMainLooper())

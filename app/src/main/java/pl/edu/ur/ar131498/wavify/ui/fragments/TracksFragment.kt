@@ -1,4 +1,4 @@
-package pl.edu.ur.ar131498.wavify
+package pl.edu.ur.ar131498.wavify.ui.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,7 +8,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import pl.edu.ur.ar131498.wavify.ui.viewmodel.MainViewModel
+import pl.edu.ur.ar131498.wavify.R
 import pl.edu.ur.ar131498.wavify.data.AudioFile
+import pl.edu.ur.ar131498.wavify.ui.activities.MainActivity
+import pl.edu.ur.ar131498.wavify.ui.adapters.AudioAdapter
+import pl.edu.ur.ar131498.wavify.ui.bottomsheets.SongMenuBottomSheet
 
 class TracksFragment : Fragment() {
 
